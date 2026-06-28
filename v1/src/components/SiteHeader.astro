@@ -1,0 +1,43 @@
+---
+import ThemeToggle from './ThemeToggle.astro';
+import { nav, site } from '../data/site';
+
+const currentPath = Astro.url.pathname;
+---
+
+<header class="border-b border-border bg-background/80 backdrop-blur-sm">
+  <div class="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-4 sm:px-6">
+    <a
+      href="/"
+      class="text-lg font-bold text-primary transition hover:opacity-80"
+    >
+      {site.title}
+    </a>
+
+    <div class="flex items-center gap-4">
+      <nav aria-label="Main">
+        <ul class="flex items-center gap-1 sm:gap-2">
+          {
+            nav.map((item) => (
+              <li>
+                <a
+                  href={item.href}
+                  class:list={[
+                    'rounded-lg px-3 py-2 text-sm font-medium transition',
+                    currentPath === item.href
+                      ? 'bg-muted text-primary'
+                      : 'text-muted-foreground hover:bg-muted hover:text-foreground',
+                  ]}
+                  aria-current={currentPath === item.href ? 'page' : undefined}
+                >
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+      <ThemeToggle />
+    </div>
+  </div>
+</header>

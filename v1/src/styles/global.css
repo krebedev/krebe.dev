@@ -1,0 +1,103 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  /* v0 palette — source: v0/src/components/Layout/global.css */
+  --base-blue: #217aff;
+  --dark-blue: #103e7e;
+  --light-blue: #b7d5ff;
+  --very-light-blue: #f6faff;
+  --grey: #3b4047;
+  --light-grey: #dee1e5;
+  --very-light-grey: #f9f9fa;
+  --orange: #f99f20;
+  --deep-orange: #de8e1d;
+  --light-red: #ff7569;
+  --green: #63ca1a;
+  --linkedin-blue: #2867b2;
+  --twitter-blue: #1da1f2;
+  --github-green: #6cc644;
+  --white: #ffffff;
+
+  /* semantic tokens mapped to v0 */
+  --background: var(--very-light-blue);
+  --foreground: var(--grey);
+  --primary: var(--base-blue);
+  --primary-foreground: var(--white);
+  --muted: var(--very-light-grey);
+  --muted-foreground: var(--grey);
+  --border: var(--light-grey);
+  --ring: var(--base-blue);
+  --heading: var(--dark-blue);
+  --accent: var(--orange);
+  --accent-foreground: var(--dark-blue);
+}
+
+.dark {
+  --background: #0a1628;
+  --foreground: var(--very-light-blue);
+  --primary: var(--base-blue);
+  --primary-foreground: var(--white);
+  --muted: #142d52;
+  --muted-foreground: var(--light-blue);
+  --border: #1e3f6e;
+  --ring: var(--light-blue);
+  --heading: var(--light-blue);
+  --accent: var(--orange);
+  --accent-foreground: var(--dark-blue);
+}
+
+@theme inline {
+  /* v0 palette utilities: bg-base-blue, text-dark-blue, etc. */
+  --color-base-blue: var(--base-blue);
+  --color-dark-blue: var(--dark-blue);
+  --color-light-blue: var(--light-blue);
+  --color-very-light-blue: var(--very-light-blue);
+  --color-grey: var(--grey);
+  --color-light-grey: var(--light-grey);
+  --color-very-light-grey: var(--very-light-grey);
+  --color-orange: var(--orange);
+  --color-deep-orange: var(--deep-orange);
+  --color-light-red: var(--light-red);
+  --color-green: var(--green);
+  --color-linkedin-blue: var(--linkedin-blue);
+  --color-twitter-blue: var(--twitter-blue);
+  --color-github-green: var(--github-green);
+  --color-white: var(--white);
+
+  /* semantic utilities: bg-background, text-primary, etc. */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-ring: var(--ring);
+  --color-heading: var(--heading);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --font-sans: "Roboto", ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background font-sans text-foreground antialiased;
+  }
+
+  h1,
+  h2,
+  h3 {
+    @apply text-heading;
+  }
+
+  a:hover {
+    @apply text-base-blue;
+  }
+}

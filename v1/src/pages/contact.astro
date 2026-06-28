@@ -1,0 +1,119 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { site } from '../data/site';
+
+const socialLabels: Record<keyof typeof site.social, string> = {
+  twitter: 'Twitter',
+  linkedIn: 'LinkedIn',
+  github: 'GitHub',
+};
+
+const socialColors: Record<keyof typeof site.social, string> = {
+  twitter: 'bg-twitter-blue hover:opacity-90',
+  linkedIn: 'bg-linkedin-blue hover:opacity-90',
+  github: 'bg-github-green hover:bg-green',
+};
+---
+
+<BaseLayout title="Contact" description={`Get in touch with ${site.name}.`}>
+  <section class="py-12 sm:py-16">
+    <div class="mx-auto max-w-2xl px-4 sm:px-6">
+      <h1 class="text-3xl font-bold text-base-blue sm:text-4xl">Get in touch</h1>
+      <p class="mt-4 text-lg text-muted-foreground">
+        Thanks for taking the time to reach out. Got a question or an idea?
+        <a
+          href={`mailto:${site.email}`}
+          class="font-medium text-primary underline-offset-4 hover:underline"
+        >
+          Send me an email
+        </a>
+        or drop a note in the form below.
+      </p>
+
+      <form
+        class="mt-10 space-y-6 rounded-2xl border border-border bg-muted p-6 sm:p-8"
+        name="contact"
+        method="POST"
+        data-netlify="true"
+      >
+        <input type="hidden" name="form-name" value="contact" />
+
+        <div>
+          <label for="name" class="mb-2 block text-sm font-medium text-foreground">
+            Name
+          </label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            required
+            autocomplete="name"
+            placeholder="Enter your name"
+            class="w-full rounded-lg border border-border bg-background px-4 py-3 text-foreground placeholder:text-muted-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+          />
+        </div>
+
+        <div>
+          <label for="email" class="mb-2 block text-sm font-medium text-foreground">
+            Email address
+          </label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            required
+            autocomplete="email"
+            placeholder="Enter your email address"
+            class="w-full rounded-lg border border-border bg-background px-4 py-3 text-foreground placeholder:text-muted-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+          />
+        </div>
+
+        <div>
+          <label for="message" class="mb-2 block text-sm font-medium text-foreground">
+            Message
+          </label>
+          <textarea
+            id="message"
+            name="message"
+            rows="5"
+            required
+            placeholder="Enter your message"
+            class="w-full resize-y rounded-lg border border-border bg-background px-4 py-3 text-foreground placeholder:text-muted-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+          ></textarea>
+        </div>
+
+        <button
+          type="submit"
+          class="inline-flex w-full items-center justify-center rounded-lg bg-primary px-6 py-3 text-base font-medium text-primary-foreground shadow-sm transition hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring sm:w-auto"
+        >
+          Send message
+        </button>
+      </form>
+
+      <div class="mt-14">
+        <h2 class="text-2xl font-bold text-heading">Let's get social</h2>
+        <p class="mt-2 text-muted-foreground">Connect with me on social media.</p>
+
+        <ul class="mt-6 flex flex-wrap gap-3">
+          {
+            Object.entries(site.social).map(([key, href]) => (
+              <li>
+                <a
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class:list={[
+                    'inline-flex items-center rounded-lg px-4 py-2 text-sm font-medium uppercase text-white transition',
+                    socialColors[key as keyof typeof site.social],
+                  ]}
+                >
+                  {socialLabels[key as keyof typeof site.social]}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,43 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Button from '../components/Button.astro';
+import { site } from '../data/site';
+---
+
+<BaseLayout title={site.name}>
+  <section class="bg-background">
+    <div
+      class="mx-auto flex max-w-5xl flex-col items-center gap-10 px-4 py-12 sm:px-6 lg:flex-row lg:items-center lg:gap-16 lg:py-20"
+    >
+      <article class="order-2 flex-1 text-center lg:order-1 lg:text-left">
+        <h1 class="text-3xl font-bold leading-tight text-base-blue sm:text-4xl lg:text-5xl">
+          {site.name}
+          <span class="mt-2 block text-dark-blue dark:text-light-blue">{site.jobTitle}</span>
+        </h1>
+
+        <p class="mt-6 text-lg text-muted-foreground sm:text-xl">
+          I build elegant and efficient web and mobile apps that provide excellent
+          user experiences.
+        </p>
+
+        <div class="mt-10">
+          <p class="mb-4 text-base font-medium text-foreground">
+            Am I the droid you're looking for?
+          </p>
+          <Button href="/contact">Let's chat!</Button>
+        </div>
+      </article>
+
+      <div class="order-1 w-full max-w-xs shrink-0 lg:order-2 lg:max-w-sm">
+        <img
+          src="/krebeDev.jpg"
+          alt={site.name}
+          width="792"
+          height="908"
+          class="rounded-2xl border-4 border-orange shadow-lg"
+          loading="eager"
+        />
+      </div>
+    </div>
+  </section>
+</BaseLayout>

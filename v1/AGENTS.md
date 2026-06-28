@@ -18,7 +18,8 @@ Do not treat outdated sections (e.g. "not scaffolded yet") as harmless — fix o
 ## Tech stack
 
 - **Framework:** Astro (static site)
-- **Styling:** TBD at scaffold time — keep it simple; CSS Modules or scoped Astro styles are fine
+- **Styling:** [Tailwind CSS v4](https://tailwindcss.com/) via `@tailwindcss/vite` (not the legacy `@astrojs/tailwind` integration)
+- **Theming:** Light and dark modes — semantic design tokens, user-toggleable, system-preference aware on first visit
 - **Content:** Hardcoded or local data files for now — no CMS, no MDX pipeline unless explicitly added
 - **Hosting:** Netlify (target; config to be added with the project)
 
@@ -27,13 +28,54 @@ Do not treat outdated sections (e.g. "not scaffolded yet") as harmless — fix o
 Run all commands from this directory (`v1/`):
 
 ```bash
-npm install      # after package.json exists
-npm run dev      # local dev server
-npm run build    # production build
+npm install
+npm run dev      # local dev server (http://localhost:4321)
+npm run build    # production build → dist/
 npm run preview  # preview production build locally
 ```
 
-If the Astro project is not scaffolded yet, that is the first task — use the official Astro starter and keep the default structure lean.
+## Styling & theming (Tailwind)
+
+Use **Tailwind utility classes** in `.astro` components. Avoid ad-hoc CSS files unless Tailwind cannot express it (e.g. a complex animation).
+
+### Light / dark mode
+
+Support **both themes** with a user-facing toggle. Requirements:
+
+| Requirement | Approach |
+|-------------|----------|
+| User can switch themes | Toggle control in the layout (header or footer) |
+| Remembers choice | `localStorage` (e.g. key `theme`: `"light"` \| `"dark"`) |
+| Respects system on first visit | If no stored preference, use `prefers-color-scheme` |
+| No flash of wrong theme | Inline blocking script in `<head>` applies `dark` class before first paint |
+
+**Tailwind v4 setup:** `@import "tailwindcss"` in `src/styles/global.css`; Vite plugin in `astro.config.mjs`. Theme tokens live in CSS (`:root` / `.dark` variables + `@theme inline`), not `tailwind.config.mjs`.
+
+**Dark mode:** `@custom-variant dark (&:where(.dark, .dark *))` in `global.css` — toggle via `class="dark"` on `<html>`.
+
+**Theme toggle:** Small client island or minimal inline script — the only justified client JS for static pages besides the contact form. Keep it in one place (e.g. `ThemeToggle.astro`).
+
+### Semantic tokens (not raw palette in components)
+
+Define **semantic** colors in the Tailwind theme so components don't hardcode one-off hex values. The full **v0 palette** is registered in `src/styles/global.css` as Tailwind utilities (`bg-base-blue`, `text-dark-blue`, `bg-orange`, `bg-twitter-blue`, etc.).
+
+Semantic tokens (mapped to v0 in light mode):
+
+- `background` → `very-light-blue`, `foreground` → `grey`
+- `primary` → `base-blue`, `heading` → `dark-blue`
+- `accent` → `orange` (CTA buttons, matching v0)
+- `muted`, `border`, `ring` — derived from v0 greys and blues
+
+Dark mode remaps semantic tokens using v0 blues; brand colors (social links) stay unchanged.
+
+Palette source: `../v0/src/components/Layout/global.css`
+
+### Tailwind conventions
+
+- Prefer layout/spacing utilities (`flex`, `gap`, `p-`, `max-w-`) over custom CSS
+- Use responsive prefixes (`sm:`, `md:`, `lg:`) — mobile-first
+- Extract repeated class strings into Astro components, not `@apply` piles, unless a single primitive (e.g. `Button`) warrants it
+- Run `npm run build` to catch invalid Tailwind classes
 
 ## Pages (in scope)
 
@@ -50,17 +92,18 @@ Follow conventional Astro layout as the project grows:
 
 ```
 v1/
-├── public/           # Static assets (favicon, images)
+├── public/              # Static assets (favicon, images)
 ├── src/
-│   ├── components/   # Reusable UI (Layout, Nav, Button, etc.)
-│   ├── layouts/      # Page shells
-│   ├── pages/        # File-based routes (index.astro, contact.astro)
-│   └── styles/       # Global styles, tokens, resets
+│   ├── components/      # SiteHeader, SiteFooter, ThemeToggle, Button, …
+│   ├── data/            # site.ts — metadata, nav, social links
+│   ├── layouts/         # BaseLayout.astro
+│   ├── pages/           # index.astro, contact.astro
+│   └── styles/          # global.css — Tailwind import + theme tokens
 ├── astro.config.mjs
 └── package.json
 ```
 
-Colocate component-specific styles with components when using CSS Modules or `<style>` blocks.
+`src/styles/global.css` imports Tailwind and defines semantic color tokens as CSS variables for light/dark themes.
 
 ## Content reference
 
@@ -75,15 +118,17 @@ Reuse content where it still fits the simpler site. Rewrite only when the old co
 
 ## Code conventions
 
-- Prefer **Astro components** (`.astro`) for static markup; reach for framework islands only when client-side interactivity is required (e.g. contact form validation/submit).
-- Keep components small and purpose-named (`Layout`, `SiteHeader`, `ContactForm`).
-- Use semantic HTML and accessible patterns (labels, focus states, heading hierarchy).
-- Minimize client JavaScript — Astro's default is zero JS unless opted in.
+- Prefer **Astro components** (`.astro`) for static markup; reach for framework islands only when client-side interactivity is required (theme toggle, contact form).
+- Keep components small and purpose-named (`BaseLayout`, `SiteHeader`, `ThemeToggle`, `ContactForm`).
+- Use semantic Tailwind token classes (`bg-background`, `text-primary`) — not raw palette utilities scattered across components.
+- Use semantic HTML and accessible patterns (labels, focus states, heading hierarchy). Theme toggle needs an accessible name and visible focus style.
+- Minimize client JavaScript — theme toggle and contact form are the expected islands.
 - Match existing repo tone: professional, direct, not marketing-heavy.
 
 ## UI expectations
 
-- Production-quality, clean, modern — not generic "AI slop"
+- Production-quality, clean, modern — not generic "AI slop"; customize the Tailwind theme, don't ship defaults
+- Light and dark themes must both feel intentional — test both when reviewing UI
 - Responsive from mobile up
 - Fast: optimize images, avoid unnecessary JS bundles
 - For detailed UI guidance, apply `.cursor/rules/frontend-ui-engineering.mdc`
@@ -93,6 +138,7 @@ Reuse content where it still fits the simpler site. Rewrite only when the old co
 The `v0` contact page used EmailJS with a multi-step form. For `v1`:
 
 - Prefer the simplest approach that works (single-page form, Netlify Forms, or a small API route)
+- Contact form uses Netlify Forms (`data-netlify="true"`) — wire up in Netlify deploy settings
 - Do not copy the multi-step pattern unless requested
 - Never hardcode API keys; use environment variables
 
@@ -110,4 +156,5 @@ Before marking work complete:
 1. `npm run build` succeeds from `v1/`
 2. Homepage and contact page render correctly in dev and preview
 3. Navigation between the two pages works
-4. No console errors on pages that should be static
+4. Light/dark toggle works, persists across reloads, and respects system preference on first visit
+5. No console errors on pages that should be static
