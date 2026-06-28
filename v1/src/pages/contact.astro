@@ -3,35 +3,60 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import { site } from '../data/site';
 
 const socialLabels: Record<keyof typeof site.social, string> = {
-  twitter: 'Twitter',
-  linkedIn: 'LinkedIn',
   github: 'GitHub',
-};
-
-const socialColors: Record<keyof typeof site.social, string> = {
-  twitter: 'bg-twitter-blue hover:opacity-90',
-  linkedIn: 'bg-linkedin-blue hover:opacity-90',
-  github: 'bg-github-green hover:bg-green',
+  linkedIn: 'LinkedIn',
+  twitter: 'Twitter',
 };
 ---
 
 <BaseLayout title="Contact" description={`Get in touch with ${site.name}.`}>
-  <section class="py-12 sm:py-16">
-    <div class="mx-auto max-w-2xl px-4 sm:px-6">
-      <h1 class="text-3xl font-bold text-base-blue sm:text-4xl">Get in touch</h1>
-      <p class="mt-4 text-lg text-muted-foreground">
-        Thanks for taking the time to reach out. Got a question or an idea?
-        <a
-          href={`mailto:${site.email}`}
-          class="font-medium text-primary underline-offset-4 hover:underline"
-        >
-          Send me an email
-        </a>
-        or drop a note in the form below.
-      </p>
+  <section class="py-20 lg:py-28">
+    <div class="mx-auto grid max-w-6xl gap-16 px-6 lg:grid-cols-2 lg:gap-24 lg:px-10">
+      <div>
+        <p class="mb-4 text-sm font-medium uppercase tracking-[0.2em] text-primary">
+          Contact
+        </p>
+        <h1 class="text-4xl tracking-tight sm:text-5xl">Let's talk.</h1>
+        <p class="mt-6 text-lg leading-relaxed text-muted-foreground">
+          Whether you have a project in mind, a role to discuss, or just want to
+          say hello — I'd like to hear from you.
+        </p>
+
+        <div class="mt-10 space-y-3">
+          <a
+            href={`mailto:${site.email}`}
+            class="block text-lg font-medium text-foreground transition hover:text-primary"
+          >
+            {site.email}
+          </a>
+        </div>
+
+        <div class="mt-14">
+          <p class="text-sm font-medium uppercase tracking-[0.15em] text-muted-foreground">
+            Elsewhere
+          </p>
+          <ul class="mt-4 space-y-2">
+            {
+              Object.entries(site.social).map(([key, href]) => (
+                <li>
+                  <a
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-flex items-center gap-2 text-foreground transition hover:text-primary"
+                  >
+                    <span class="h-1.5 w-1.5 rounded-full bg-primary" aria-hidden="true" />
+                    {socialLabels[key as keyof typeof site.social]}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </div>
 
       <form
-        class="mt-10 space-y-6 rounded-2xl border border-border bg-muted p-6 sm:p-8"
+        class="space-y-6 rounded-2xl border border-border bg-muted/50 p-8 lg:p-10"
         name="contact"
         method="POST"
         data-netlify="true"
@@ -48,14 +73,13 @@ const socialColors: Record<keyof typeof site.social, string> = {
             name="name"
             required
             autocomplete="name"
-            placeholder="Enter your name"
-            class="w-full rounded-lg border border-border bg-background px-4 py-3 text-foreground placeholder:text-muted-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+            class="w-full rounded-xl border border-border bg-background px-4 py-3 text-foreground transition placeholder:text-muted-foreground focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
           />
         </div>
 
         <div>
           <label for="email" class="mb-2 block text-sm font-medium text-foreground">
-            Email address
+            Email
           </label>
           <input
             type="email"
@@ -63,8 +87,7 @@ const socialColors: Record<keyof typeof site.social, string> = {
             name="email"
             required
             autocomplete="email"
-            placeholder="Enter your email address"
-            class="w-full rounded-lg border border-border bg-background px-4 py-3 text-foreground placeholder:text-muted-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+            class="w-full rounded-xl border border-border bg-background px-4 py-3 text-foreground transition placeholder:text-muted-foreground focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
           />
         </div>
 
@@ -77,43 +100,17 @@ const socialColors: Record<keyof typeof site.social, string> = {
             name="message"
             rows="5"
             required
-            placeholder="Enter your message"
-            class="w-full resize-y rounded-lg border border-border bg-background px-4 py-3 text-foreground placeholder:text-muted-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+            class="w-full resize-y rounded-xl border border-border bg-background px-4 py-3 text-foreground transition placeholder:text-muted-foreground focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
           ></textarea>
         </div>
 
         <button
           type="submit"
-          class="inline-flex w-full items-center justify-center rounded-lg bg-primary px-6 py-3 text-base font-medium text-primary-foreground shadow-sm transition hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring sm:w-auto"
+          class="inline-flex w-full items-center justify-center rounded-full bg-primary px-7 py-3.5 text-sm font-semibold tracking-wide text-primary-foreground transition hover:bg-orange-deep focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring sm:w-auto"
         >
           Send message
         </button>
       </form>
-
-      <div class="mt-14">
-        <h2 class="text-2xl font-bold text-heading">Let's get social</h2>
-        <p class="mt-2 text-muted-foreground">Connect with me on social media.</p>
-
-        <ul class="mt-6 flex flex-wrap gap-3">
-          {
-            Object.entries(site.social).map(([key, href]) => (
-              <li>
-                <a
-                  href={href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class:list={[
-                    'inline-flex items-center rounded-lg px-4 py-2 text-sm font-medium uppercase text-white transition',
-                    socialColors[key as keyof typeof site.social],
-                  ]}
-                >
-                  {socialLabels[key as keyof typeof site.social]}
-                </a>
-              </li>
-            ))
-          }
-        </ul>
-      </div>
     </div>
   </section>
 </BaseLayout>

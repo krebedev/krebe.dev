@@ -3,83 +3,77 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  /* v0 palette — source: v0/src/components/Layout/global.css */
-  --base-blue: #217aff;
-  --dark-blue: #103e7e;
-  --light-blue: #b7d5ff;
-  --very-light-blue: #f6faff;
-  --grey: #3b4047;
-  --light-grey: #dee1e5;
-  --very-light-grey: #f9f9fa;
+  /* Brand — orange is the dominant color (from v0, refined for premium use) */
   --orange: #f99f20;
-  --deep-orange: #de8e1d;
-  --light-red: #ff7569;
-  --green: #63ca1a;
-  --linkedin-blue: #2867b2;
-  --twitter-blue: #1da1f2;
-  --github-green: #6cc644;
-  --white: #ffffff;
+  --orange-deep: #de8e1d;
+  --orange-soft: #fff4e5;
+  --orange-muted: #f5d9a8;
 
-  /* semantic tokens mapped to v0 */
-  --background: var(--very-light-blue);
-  --foreground: var(--grey);
-  --primary: var(--base-blue);
-  --primary-foreground: var(--white);
-  --muted: var(--very-light-grey);
-  --muted-foreground: var(--grey);
-  --border: var(--light-grey);
-  --ring: var(--base-blue);
-  --heading: var(--dark-blue);
-  --accent: var(--orange);
-  --accent-foreground: var(--dark-blue);
+  /* Neutrals — warm, not blue-tinted */
+  --stone-50: #faf8f5;
+  --stone-100: #f0ebe3;
+  --stone-200: #e2dbd0;
+  --stone-400: #9c9288;
+  --stone-600: #5c554d;
+  --stone-900: #1c1917;
+
+  /* Social — only for platform-specific accents */
+  --linkedin: #2867b2;
+  --twitter: #1da1f2;
+  --github: #6cc644;
+
+  /* Semantic */
+  --background: var(--stone-50);
+  --foreground: var(--stone-900);
+  --primary: var(--orange);
+  --primary-foreground: var(--stone-900);
+  --primary-soft: var(--orange-soft);
+  --muted: var(--stone-100);
+  --muted-foreground: var(--stone-600);
+  --border: var(--stone-200);
+  --ring: var(--orange);
+  --heading: var(--stone-900);
 }
 
 .dark {
-  --background: #0a1628;
-  --foreground: var(--very-light-blue);
-  --primary: var(--base-blue);
-  --primary-foreground: var(--white);
-  --muted: #142d52;
-  --muted-foreground: var(--light-blue);
-  --border: #1e3f6e;
-  --ring: var(--light-blue);
-  --heading: var(--light-blue);
-  --accent: var(--orange);
-  --accent-foreground: var(--dark-blue);
+  --orange-soft: #2a2010;
+  --orange-muted: #3d2e14;
+
+  --background: #0c0a09;
+  --foreground: #faf8f5;
+  --primary: var(--orange);
+  --primary-foreground: var(--stone-900);
+  --primary-soft: var(--orange-soft);
+  --muted: #1a1714;
+  --muted-foreground: #a8a29e;
+  --border: #292524;
+  --ring: var(--orange);
+  --heading: #faf8f5;
 }
 
 @theme inline {
-  /* v0 palette utilities: bg-base-blue, text-dark-blue, etc. */
-  --color-base-blue: var(--base-blue);
-  --color-dark-blue: var(--dark-blue);
-  --color-light-blue: var(--light-blue);
-  --color-very-light-blue: var(--very-light-blue);
-  --color-grey: var(--grey);
-  --color-light-grey: var(--light-grey);
-  --color-very-light-grey: var(--very-light-grey);
   --color-orange: var(--orange);
-  --color-deep-orange: var(--deep-orange);
-  --color-light-red: var(--light-red);
-  --color-green: var(--green);
-  --color-linkedin-blue: var(--linkedin-blue);
-  --color-twitter-blue: var(--twitter-blue);
-  --color-github-green: var(--github-green);
-  --color-white: var(--white);
+  --color-orange-deep: var(--orange-deep);
+  --color-orange-soft: var(--orange-soft);
+  --color-orange-muted: var(--orange-muted);
 
-  /* semantic utilities: bg-background, text-primary, etc. */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
+  --color-primary-soft: var(--primary-soft);
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
   --color-border: var(--border);
   --color-ring: var(--ring);
   --color-heading: var(--heading);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
 
-  --font-sans: "Roboto", ui-sans-serif, system-ui, sans-serif;
+  --color-linkedin: var(--linkedin);
+  --color-twitter: var(--twitter);
+  --color-github: var(--github);
+
+  --font-sans: "Instrument Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Instrument Serif", ui-serif, Georgia, serif;
 }
 
 @layer base {
@@ -94,10 +88,10 @@
   h1,
   h2,
   h3 {
-    @apply text-heading;
+    @apply font-display text-heading;
   }
 
-  a:hover {
-    @apply text-base-blue;
+  ::selection {
+    background-color: color-mix(in srgb, var(--orange) 35%, transparent);
   }
 }

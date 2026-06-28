@@ -1,15 +1,16 @@
 export const site = {
-  title: 'krebeDev',
+  title: 'krebe.dev',
   name: 'Solomon Ekrebe',
   jobTitle: 'Full-Stack Developer',
+  tagline: 'Building thoughtful software with care for craft, clarity, and the people who use it.',
   description:
-    'Full-Stack Developer building delightful, user-friendly, and accessible web and mobile apps.',
+    'Full-Stack Developer building thoughtful, accessible web and mobile applications.',
   url: 'https://www.krebe.dev',
   email: 'solomon@krebe.dev',
   social: {
-    twitter: 'https://twitter.com/krebedev',
-    linkedIn: 'https://linkedin.com/krebedev',
     github: 'https://github.com/krebedev',
+    linkedIn: 'https://linkedin.com/krebedev',
+    twitter: 'https://twitter.com/krebedev',
   },
 } as const;
 

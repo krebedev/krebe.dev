@@ -5,36 +5,52 @@ import { site } from '../data/site';
 ---
 
 <BaseLayout title={site.name}>
-  <section class="bg-background">
+  <section class="relative overflow-hidden">
     <div
-      class="mx-auto flex max-w-5xl flex-col items-center gap-10 px-4 py-12 sm:px-6 lg:flex-row lg:items-center lg:gap-16 lg:py-20"
-    >
-      <article class="order-2 flex-1 text-center lg:order-1 lg:text-left">
-        <h1 class="text-3xl font-bold leading-tight text-base-blue sm:text-4xl lg:text-5xl">
-          {site.name}
-          <span class="mt-2 block text-dark-blue dark:text-light-blue">{site.jobTitle}</span>
-        </h1>
+      class="pointer-events-none absolute -right-24 -top-24 h-96 w-96 rounded-full bg-primary/10 blur-3xl"
+      aria-hidden="true"
+    ></div>
 
-        <p class="mt-6 text-lg text-muted-foreground sm:text-xl">
-          I build elegant and efficient web and mobile apps that provide excellent
-          user experiences.
+    <div
+      class="relative mx-auto grid max-w-6xl gap-16 px-6 py-20 lg:grid-cols-[1fr_auto] lg:items-center lg:gap-20 lg:px-10 lg:py-32"
+    >
+      <article class="max-w-xl">
+        <p class="mb-6 text-sm font-medium uppercase tracking-[0.2em] text-primary">
+          {site.jobTitle}
         </p>
 
-        <div class="mt-10">
-          <p class="mb-4 text-base font-medium text-foreground">
-            Am I the droid you're looking for?
-          </p>
-          <Button href="/contact">Let's chat!</Button>
+        <h1 class="text-5xl leading-[1.05] tracking-tight sm:text-6xl lg:text-7xl">
+          {site.name}
+        </h1>
+
+        <p class="mt-8 text-lg leading-relaxed text-muted-foreground sm:text-xl">
+          {site.tagline}
+        </p>
+
+        <div class="mt-12 flex flex-wrap items-center gap-6">
+          <Button href="/contact">Get in touch</Button>
+          <a
+            href={site.social.github}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-sm font-medium text-muted-foreground transition hover:text-primary"
+          >
+            View GitHub
+          </a>
         </div>
       </article>
 
-      <div class="order-1 w-full max-w-xs shrink-0 lg:order-2 lg:max-w-sm">
+      <div class="relative mx-auto w-full max-w-[17rem] lg:mx-0 lg:max-w-xs">
+        <div
+          class="absolute -inset-3 rounded-[2rem] bg-primary/20 blur-2xl"
+          aria-hidden="true"
+        ></div>
         <img
           src="/krebeDev.jpg"
           alt={site.name}
           width="792"
           height="908"
-          class="rounded-2xl border-4 border-orange shadow-lg"
+          class="relative rounded-[1.75rem] object-cover shadow-2xl ring-1 ring-border"
           loading="eager"
         />
       </div>

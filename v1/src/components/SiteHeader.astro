@@ -5,32 +5,38 @@ import { nav, site } from '../data/site';
 const currentPath = Astro.url.pathname;
 ---
 
-<header class="border-b border-border bg-background/80 backdrop-blur-sm">
-  <div class="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-4 sm:px-6">
+<header class="sticky top-0 z-50 border-b border-border/60 bg-background/90 backdrop-blur-md">
+  <div class="mx-auto flex max-w-6xl items-center justify-between gap-6 px-6 py-5 lg:px-10">
     <a
       href="/"
-      class="text-lg font-bold text-primary transition hover:opacity-80"
+      class="font-display text-xl tracking-tight text-foreground transition hover:text-primary"
     >
       {site.title}
     </a>
 
-    <div class="flex items-center gap-4">
+    <div class="flex items-center gap-6">
       <nav aria-label="Main">
-        <ul class="flex items-center gap-1 sm:gap-2">
+        <ul class="flex items-center gap-1">
           {
             nav.map((item) => (
               <li>
                 <a
                   href={item.href}
                   class:list={[
-                    'rounded-lg px-3 py-2 text-sm font-medium transition',
+                    'relative px-4 py-2 text-sm font-medium tracking-wide transition',
                     currentPath === item.href
-                      ? 'bg-muted text-primary'
-                      : 'text-muted-foreground hover:bg-muted hover:text-foreground',
+                      ? 'text-primary'
+                      : 'text-muted-foreground hover:text-foreground',
                   ]}
                   aria-current={currentPath === item.href ? 'page' : undefined}
                 >
                   {item.label}
+                  {currentPath === item.href && (
+                    <span
+                      class="absolute inset-x-4 -bottom-[1.35rem] h-0.5 rounded-full bg-primary"
+                      aria-hidden="true"
+                    />
+                  )}
                 </a>
               </li>
             ))

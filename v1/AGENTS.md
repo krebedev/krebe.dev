@@ -55,20 +55,23 @@ Support **both themes** with a user-facing toggle. Requirements:
 
 **Theme toggle:** Small client island or minimal inline script — the only justified client JS for static pages besides the contact form. Keep it in one place (e.g. `ThemeToggle.astro`).
 
-### Semantic tokens (not raw palette in components)
+### Semantic tokens
 
-Define **semantic** colors in the Tailwind theme so components don't hardcode one-off hex values. The full **v0 palette** is registered in `src/styles/global.css` as Tailwind utilities (`bg-base-blue`, `text-dark-blue`, `bg-orange`, `bg-twitter-blue`, etc.).
+**Orange is the dominant brand color** (`primary`). Use it for accents, CTAs, focus rings, and active nav — not as wallpaper.
 
-Semantic tokens (mapped to v0 in light mode):
+Semantic tokens in `src/styles/global.css`:
 
-- `background` → `very-light-blue`, `foreground` → `grey`
-- `primary` → `base-blue`, `heading` → `dark-blue`
-- `accent` → `orange` (CTA buttons, matching v0)
-- `muted`, `border`, `ring` — derived from v0 greys and blues
+- `primary` / `primary-foreground` — orange brand (`#f99f20`), dark text on buttons
+- `background` / `foreground` — warm neutrals (stone palette), not blue-tinted
+- `muted`, `border`, `ring` — supporting surfaces and focus
 
-Dark mode remaps semantic tokens using v0 blues; brand colors (social links) stay unchanged.
+Use semantic classes in components (`text-primary`, `bg-primary`, `bg-background`). Avoid scattering raw `bg-orange` unless intentional.
 
-Palette source: `../v0/src/components/Layout/global.css`
+### Design direction
+
+**This is a bespoke, premium site — not a v0 remake.** `v0/` is a reference for metadata and copy tone only. Do not replicate v0 layout, quirks, or visual patterns (multi-step forms, blue-heavy palette, chunky social buttons, etc.).
+
+Aim for: restrained typography, generous whitespace, warm neutrals, orange as a precise accent, Instrument Serif + Instrument Sans.
 
 ### Tailwind conventions
 
@@ -114,7 +117,7 @@ Personal copy, SEO text, social URLs, and images are in `../v0/`:
 - Contact page & form: `../v0/src/pages/contact.js`
 - Images: `../v0/src/images/`
 
-Reuse content where it still fits the simpler site. Rewrite only when the old copy references removed pages (portfolio, blog, about).
+Reuse **metadata** (name, email, social URLs) from `v0/`. Write fresh copy and layout — do not mirror v0 page structure or visual design.
 
 ## Code conventions
 
@@ -127,8 +130,9 @@ Reuse content where it still fits the simpler site. Rewrite only when the old co
 
 ## UI expectations
 
-- Production-quality, clean, modern — not generic "AI slop"; customize the Tailwind theme, don't ship defaults
-- Light and dark themes must both feel intentional — test both when reviewing UI
+- **Bespoke and premium** — clean, intentional, generous whitespace; not a v0 port or generic template
+- Orange as the dominant accent; warm neutrals for surfaces and text
+- Light and dark themes must both feel deliberate — test both when reviewing UI
 - Responsive from mobile up
 - Fast: optimize images, avoid unnecessary JS bundles
 - For detailed UI guidance, apply `.cursor/rules/frontend-ui-engineering.mdc`
