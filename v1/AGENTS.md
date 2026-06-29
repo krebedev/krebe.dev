@@ -1,6 +1,6 @@
 # krebe.dev v1 — Astro site
 
-New implementation of [krebe.dev](https://www.krebe.dev). Built with **Astro**. Scope for this round: **homepage** and **contact page** only.
+New implementation of [krebe.dev](https://www.krebe.dev). Built with **Astro**. Scope for this round: **homepage only** — fixed hero, scroll-reveal story, and a closing contact block.
 
 ## Living documentation
 
@@ -53,7 +53,7 @@ Support **both themes** with a user-facing toggle. Requirements:
 
 **Dark mode:** `@custom-variant dark (&:where(.dark, .dark *))` in `global.css` — toggle via `class="dark"` on `<html>`.
 
-**Theme toggle:** Small client island or minimal inline script — the only justified client JS for static pages besides the contact form. Keep it in one place (e.g. `ThemeToggle.astro`).
+**Theme toggle:** Small client island or minimal inline script — the only justified client JS on static pages. Keep it in one place (e.g. `ThemeToggle.astro`).
 
 ### Semantic tokens
 
@@ -84,8 +84,7 @@ Aim for: restrained typography, generous whitespace, warm neutrals, orange as a 
 
 | Route | Purpose |
 |-------|---------|
-| `/` | Homepage — fixed hero + scroll-reveal story section, contact CTA |
-| `/contact` | Contact — form, social links, or both |
+| `/` | Homepage — fixed hero, scroll-reveal story, closing email + social links |
 
 No other routes in this round. A minimal shared layout (header, footer, nav between these two pages) is expected.
 
@@ -100,7 +99,7 @@ v1/
 │   ├── components/      # SiteHeader, SiteFooter, ThemeToggle, Button, …
 │   ├── data/            # site.ts — metadata; story.ts — parsed draft.md stanzas
 │   ├── layouts/         # BaseLayout.astro
-│   ├── pages/           # index.astro, contact.astro
+│   ├── pages/           # index.astro
 │   └── styles/          # global.css — Tailwind import + theme tokens
 ├── astro.config.mjs
 └── package.json
@@ -121,11 +120,11 @@ Reuse **metadata** (name, email, social URLs) from `v0/`. Write fresh copy and l
 
 ## Code conventions
 
-- Prefer **Astro components** (`.astro`) for static markup; reach for framework islands only when client-side interactivity is required (theme toggle, contact form).
-- Keep components small and purpose-named (`BaseLayout`, `SiteHeader`, `ThemeToggle`, `ContactForm`).
+- Prefer **Astro components** (`.astro`) for static markup; reach for client JS only when needed (theme toggle, story reveal).
+- Keep components small and purpose-named (`BaseLayout`, `SiteHeader`, `ThemeToggle`, `StorySection`).
 - Use semantic Tailwind token classes (`bg-background`, `text-primary`) — not raw palette utilities scattered across components.
 - Use semantic HTML and accessible patterns (labels, focus states, heading hierarchy). Theme toggle needs an accessible name and visible focus style.
-- Minimize client JavaScript — theme toggle and contact form are the expected islands.
+- Minimize client JavaScript — theme toggle and story reveal are the expected scripts.
 - Match existing repo tone: professional, direct, not marketing-heavy.
 
 ## UI expectations
@@ -137,20 +136,15 @@ Reuse **metadata** (name, email, social URLs) from `v0/`. Write fresh copy and l
 - Fast: optimize images, avoid unnecessary JS bundles
 - For detailed UI guidance, apply `.cursor/rules/frontend-ui-engineering.mdc`
 
-## Contact form
+## Closing block
 
-The `v0` contact page used EmailJS with a multi-step form. For `v1`:
-
-- Prefer the simplest approach that works (single-page form, Netlify Forms, or a small API route)
-- Contact form uses Netlify Forms (`data-netlify="true"`) — wire up in Netlify deploy settings
-- Do not copy the multi-step pattern unless requested
-- Never hardcode API keys; use environment variables
+Homepage ends with a simple contact block (`site.closing`, `site.email`, GitHub + LinkedIn). No separate contact page or form in this round.
 
 ## Boundaries
 
 - Work only inside `v1/` unless explicitly migrating an asset from `v0/`
 - No blog, portfolio, about, or MDX content pipeline in this round
-- No new pages beyond `/` and `/contact` without approval
+- No new pages beyond `/` without approval
 - No commits unless the user asks
 
 ## Verification
@@ -158,8 +152,7 @@ The `v0` contact page used EmailJS with a multi-step form. For `v1`:
 Before marking work complete:
 
 1. `npm run build` succeeds from `v1/`
-2. Homepage and contact page render correctly in dev and preview
-3. Navigation between the two pages works
-4. Light/dark toggle works, persists across reloads, and respects system preference on first visit
-5. Homepage story stanzas reveal on scroll; hero stays fixed while story scrolls over it
-6. No console errors on pages that should be static
+2. Homepage renders correctly in dev and preview
+3. Light/dark toggle works, persists across reloads, and respects system preference on first visit
+4. Homepage story stanzas reveal on scroll; hero stays fixed while story scrolls over it
+5. No console errors on pages that should be static

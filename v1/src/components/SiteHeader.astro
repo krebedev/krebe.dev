@@ -13,28 +13,32 @@ const currentPath = Astro.url.pathname;
     </a>
 
     <div class="flex items-center gap-6">
-      <nav aria-label="Main">
-        <ul class="flex items-center gap-1">
-          {
-            nav.map((item) => (
-              <li>
-                <a
-                  href={item.href}
-                  class:list={[
-                    'px-4 py-2 text-sm font-medium tracking-wide transition',
-                    currentPath === item.href
-                      ? 'text-primary'
-                      : 'text-muted-foreground hover:text-foreground',
-                  ]}
-                  aria-current={currentPath === item.href ? 'page' : undefined}
-                >
-                  {item.label}
-                </a>
-              </li>
-            ))
-          }
-        </ul>
-      </nav>
+      {
+        nav.length > 0 && (
+          <nav aria-label="Main">
+            <ul class="flex items-center gap-1">
+              {
+                nav.map((item) => (
+                  <li>
+                    <a
+                      href={item.href}
+                      class:list={[
+                        'px-4 py-2 text-sm font-medium tracking-wide transition',
+                        currentPath === item.href
+                          ? 'text-primary'
+                          : 'text-muted-foreground hover:text-foreground',
+                      ]}
+                      aria-current={currentPath === item.href ? 'page' : undefined}
+                    >
+                      {item.label}
+                    </a>
+                  </li>
+                ))
+              }
+            </ul>
+          </nav>
+        )
+      }
       <ThemeToggle />
     </div>
   </div>

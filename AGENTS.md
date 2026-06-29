@@ -6,7 +6,7 @@ Personal website for **Solomon Ekrebe** ([krebeDev](https://github.com/krebedev)
 
 | Path | Status | Purpose |
 |------|--------|---------|
-| `v1/` | **Active** | New site — Astro, homepage + contact only |
+| `v1/` | **Active** | New site — Astro, single-page homepage |
 | `v0/` | Legacy | Previous Gatsby site (portfolio, blog, about, contact). Reference only. |
 | `.cursor/rules/` | Active | Workflow rules for AI-assisted development |
 
@@ -35,10 +35,9 @@ If you notice stale guidance while working, fix it — don't leave the next agen
 
 The site is being rebuilt from scratch in `v1/` with a narrower scope:
 
-- **Homepage** — intro, role, primary CTA to contact
-- **Contact** — way to reach Solomon (form and/or social links)
+- **Homepage** — fixed hero, scroll-reveal story, closing email + social links
 
-Pages from `v0/` (portfolio, blog, about) are out of scope for this round. Do not port or reintroduce them unless explicitly requested.
+Pages from `v0/` (portfolio, blog, about, contact) are out of scope for this round. Do not port or reintroduce them unless explicitly requested.
 
 Use `v0/` as a **content and design reference** — copy, metadata, images, and UX patterns live there. Do not modify `v0/` unless the task explicitly says so.
 

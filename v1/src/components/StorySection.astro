@@ -1,22 +1,30 @@
 ---
 import { storyBlocks } from "../data/story";
-import Button from "./Button.astro";
+import { site } from "../data/site";
 
 const isQuestion = (line: string) => line.startsWith('"') && line.endsWith('"');
+
+const closingSocial = [
+  { label: "GitHub", href: site.social.github },
+  { label: "LinkedIn", href: site.social.linkedIn },
+] as const;
 ---
 
-<section id='story' class='story-section relative z-10 bg-muted pb-10'>
-  <div class='mx-auto max-w-2xl px-6 py-20 sm:py-28 lg:px-10'>
+<section
+  id="story"
+  class="story-section relative z-10 bg-muted pb-[10px]"
+>
+  <div class="mx-auto max-w-2xl px-6 py-20 sm:py-28 lg:px-10">
     {
       storyBlocks.map((block, index) => {
         if (block.type === "h2") {
           return (
             <div
               data-reveal
-              class='story-reveal mb-10 sm:mb-12'
+              class="story-reveal mb-10 sm:mb-12"
               style={`--reveal-delay: ${index * 30}ms`}
             >
-              <h2 class='text-2xl font-medium tracking-tight text-heading sm:text-3xl'>
+              <h2 class="text-2xl font-medium tracking-tight text-heading sm:text-3xl">
                 {block.text}
               </h2>
             </div>
@@ -27,10 +35,10 @@ const isQuestion = (line: string) => line.startsWith('"') && line.endsWith('"');
           return (
             <div
               data-reveal
-              class='story-reveal mb-6 mt-14 sm:mt-16'
+              class="story-reveal mb-6 mt-14 sm:mt-16"
               style={`--reveal-delay: ${index * 30}ms`}
             >
-              <h3 class='text-xs font-medium uppercase tracking-[0.15em] text-primary sm:text-sm'>
+              <h3 class="text-xs font-medium uppercase tracking-[0.15em] text-primary sm:text-sm">
                 {block.text}
               </h3>
             </div>
@@ -63,6 +71,43 @@ const isQuestion = (line: string) => line.startsWith('"') && line.endsWith('"');
         );
       })
     }
+
+    <div
+      id="contact"
+      data-reveal
+      class="story-reveal mt-16 border-t border-border/60 pt-10 sm:mt-20 sm:pt-12"
+    >
+      <p class="text-lg leading-relaxed text-foreground sm:text-xl">
+        {site.closing}
+      </p>
+
+      <a
+        href={`mailto:${site.email}`}
+        class="mt-6 inline-block text-lg font-medium text-foreground transition hover:text-primary sm:text-xl"
+      >
+        {site.email}
+      </a>
+
+      <p class="mt-6 text-base text-muted-foreground sm:text-lg">
+        <a
+          href={closingSocial[0].href}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="transition hover:text-primary"
+        >
+          {closingSocial[0].label}
+        </a>
+        <span aria-hidden="true"> · </span>
+        <a
+          href={closingSocial[1].href}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="transition hover:text-primary"
+        >
+          {closingSocial[1].label}
+        </a>
+      </p>
+    </div>
   </div>
 </section>
 
