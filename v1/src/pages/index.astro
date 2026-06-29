@@ -1,59 +1,11 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import Button from '../components/Button.astro';
+import Hero from '../components/Hero.astro';
+import StorySection from '../components/StorySection.astro';
 import { site } from '../data/site';
 ---
 
 <BaseLayout title={site.name}>
-  <section class="relative overflow-hidden">
-    <div
-      class="pointer-events-none absolute -right-24 -top-24 h-96 w-96 rounded-full bg-primary/10 blur-3xl"
-      aria-hidden="true"
-    ></div>
-
-    <div
-      class="relative mx-auto grid max-w-6xl gap-16 px-6 py-20 lg:grid-cols-[1fr_auto] lg:items-center lg:gap-20 lg:px-10 lg:py-32"
-    >
-      <article class="max-w-xl">
-        <p class="mb-6 text-sm font-medium uppercase tracking-[0.2em] text-primary">
-          {site.jobTitle}
-        </p>
-
-        <h1 class="text-5xl leading-[1.05] tracking-tight sm:text-6xl lg:text-7xl">
-          {site.name}
-        </h1>
-
-        <p class="mt-8 text-lg leading-relaxed text-muted-foreground sm:text-xl">
-          {site.tagline}
-        </p>
-
-        <div class="mt-12 flex flex-wrap items-center gap-6">
-          <Button href="/contact">Get in touch</Button>
-          <a
-            href={site.social.github}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="text-sm font-medium text-muted-foreground transition hover:text-primary"
-          >
-            View GitHub
-          </a>
-        </div>
-      </article>
-
-      <div class="relative mx-auto w-full max-w-[17rem] lg:mx-0 lg:max-w-xs">
-        <div
-          class="absolute -inset-3 rounded-[2rem] bg-primary/20 blur-2xl"
-          aria-hidden="true"
-        ></div>
-        <img
-          src="/krebeDev.jpg"
-          alt={site.name}
-          width="792"
-          height="908"
-          class="relative rounded-[1.75rem] object-cover shadow-2xl ring-1 ring-border"
-          loading="eager"
-        />
-      </div>
-    </div>
-  </section>
+  <Hero />
+  <StorySection />
 </BaseLayout>

@@ -1,0 +1,91 @@
+---
+import { site } from '../data/site';
+---
+
+<div
+  id="hero-spacer"
+  aria-hidden="true"
+  style="height: calc(100dvh - var(--site-header-height, 5rem));"
+></div>
+
+<section
+  id="hero"
+  class="hero pointer-events-none fixed inset-x-0 z-0 flex flex-col"
+  style="top: var(--site-header-height, 5rem); height: calc(100dvh - var(--site-header-height, 5rem));"
+>
+  <div class="flex-1" aria-hidden="true"></div>
+
+  <div id="hero-name-container" class="w-full px-6 pb-10 sm:px-8 sm:pb-12 lg:px-10 lg:pb-14">
+    <h1
+      id="hero-name"
+      class="block w-full font-sans font-medium leading-[0.92] tracking-[-0.03em] text-heading whitespace-nowrap"
+    >
+      {site.name}
+    </h1>
+  </div>
+</section>
+
+<script>
+  const header = document.querySelector('header');
+  const container = document.getElementById('hero-name-container');
+  const name = document.getElementById('hero-name');
+
+  const syncHeaderHeight = () => {
+    if (!header) return;
+    const height = `${header.offsetHeight}px`;
+    document.documentElement.style.setProperty('--site-header-height', height);
+  };
+
+  const getMaxTextWidth = () => {
+    if (!container) return 0;
+    const styles = getComputedStyle(container);
+    return (
+      container.clientWidth -
+      parseFloat(styles.paddingLeft) -
+      parseFloat(styles.paddingRight)
+    );
+  };
+
+  const fitName = () => {
+    if (!name) return;
+
+    const maxWidth = getMaxTextWidth();
+    if (maxWidth <= 0) return;
+
+    let low = 16;
+    let high = 900;
+    let best = low;
+
+    while (low <= high) {
+      const mid = Math.floor((low + high) / 2);
+      name.style.fontSize = `${mid}px`;
+
+      if (name.scrollWidth <= maxWidth) {
+        best = mid;
+        low = mid + 1;
+      } else {
+        high = mid - 1;
+      }
+    }
+
+    name.style.fontSize = `${best}px`;
+  };
+
+  const update = () => {
+    syncHeaderHeight();
+    fitName();
+  };
+
+  update();
+  document.fonts?.ready.then(update);
+
+  if (header) {
+    new ResizeObserver(update).observe(header);
+  }
+
+  if (container) {
+    new ResizeObserver(update).observe(container);
+  }
+
+  window.addEventListener('resize', update, { passive: true });
+</script>

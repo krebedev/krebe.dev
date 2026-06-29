@@ -1,4 +1,5 @@
 ---
+import '@fontsource-variable/geist/wght.css';
 import '../styles/global.css';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
@@ -7,9 +8,10 @@ import { site } from '../data/site';
 interface Props {
   title: string;
   description?: string;
+  hideFooter?: boolean;
 }
 
-const { title, description = site.description } = Astro.props;
+const { title, description = site.jobTitle, hideFooter = false } = Astro.props;
 const pageTitle = title === site.name ? `${site.jobTitle} | ${site.name}` : `${title} | ${site.title}`;
 ---
 
@@ -20,12 +22,6 @@ const pageTitle = title === site.name ? `${site.jobTitle} | ${site.name}` : `${t
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
     <link rel="icon" type="image/png" href="/favicon.png" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Instrument+Serif:ital@0;1&display=swap"
-      rel="stylesheet"
-    />
     <title>{pageTitle}</title>
     <script is:inline>
       (function () {
@@ -42,6 +38,6 @@ const pageTitle = title === site.name ? `${site.jobTitle} | ${site.name}` : `${t
     <main class="flex-1">
       <slot />
     </main>
-    <SiteFooter />
+    {!hideFooter && <SiteFooter />}
   </body>
 </html>

@@ -71,7 +71,7 @@ Use semantic classes in components (`text-primary`, `bg-primary`, `bg-background
 
 **This is a bespoke, premium site — not a v0 remake.** `v0/` is a reference for metadata and copy tone only. Do not replicate v0 layout, quirks, or visual patterns (multi-step forms, blue-heavy palette, chunky social buttons, etc.).
 
-Aim for: restrained typography, generous whitespace, warm neutrals, orange as a precise accent, Instrument Serif + Instrument Sans.
+Aim for: restrained typography, generous whitespace, warm neutrals, orange as a precise accent, Geist sans throughout.
 
 ### Tailwind conventions
 
@@ -84,7 +84,7 @@ Aim for: restrained typography, generous whitespace, warm neutrals, orange as a 
 
 | Route | Purpose |
 |-------|---------|
-| `/` | Homepage — who Solomon is, what he does, CTA to contact |
+| `/` | Homepage — fixed hero + scroll-reveal story section, contact CTA |
 | `/contact` | Contact — form, social links, or both |
 
 No other routes in this round. A minimal shared layout (header, footer, nav between these two pages) is expected.
@@ -98,7 +98,7 @@ v1/
 ├── public/              # Static assets (favicon, images)
 ├── src/
 │   ├── components/      # SiteHeader, SiteFooter, ThemeToggle, Button, …
-│   ├── data/            # site.ts — metadata, nav, social links
+│   ├── data/            # site.ts — metadata; story.ts — parsed draft.md stanzas
 │   ├── layouts/         # BaseLayout.astro
 │   ├── pages/           # index.astro, contact.astro
 │   └── styles/          # global.css — Tailwind import + theme tokens
@@ -161,4 +161,5 @@ Before marking work complete:
 2. Homepage and contact page render correctly in dev and preview
 3. Navigation between the two pages works
 4. Light/dark toggle works, persists across reloads, and respects system preference on first visit
-5. No console errors on pages that should be static
+5. Homepage story stanzas reveal on scroll; hero stays fixed while story scrolls over it
+6. No console errors on pages that should be static

@@ -1,17 +1,15 @@
 ---
+import Logo from './Logo.astro';
 import ThemeToggle from './ThemeToggle.astro';
-import { nav, site } from '../data/site';
+import { nav } from '../data/site';
 
 const currentPath = Astro.url.pathname;
 ---
 
-<header class="sticky top-0 z-50 border-b border-border/60 bg-background/90 backdrop-blur-md">
-  <div class="mx-auto flex max-w-6xl items-center justify-between gap-6 px-6 py-5 lg:px-10">
-    <a
-      href="/"
-      class="font-display text-xl tracking-tight text-foreground transition hover:text-primary"
-    >
-      {site.title}
+<header class="sticky top-0 z-50 w-full bg-background/90 backdrop-blur-md">
+  <div class="flex w-full items-center justify-between gap-6 px-6 py-5 lg:px-10">
+    <a href="/" class="transition-opacity hover:opacity-80" aria-label="krebe.dev home">
+      <Logo />
     </a>
 
     <div class="flex items-center gap-6">
@@ -23,7 +21,7 @@ const currentPath = Astro.url.pathname;
                 <a
                   href={item.href}
                   class:list={[
-                    'relative px-4 py-2 text-sm font-medium tracking-wide transition',
+                    'px-4 py-2 text-sm font-medium tracking-wide transition',
                     currentPath === item.href
                       ? 'text-primary'
                       : 'text-muted-foreground hover:text-foreground',
@@ -31,12 +29,6 @@ const currentPath = Astro.url.pathname;
                   aria-current={currentPath === item.href ? 'page' : undefined}
                 >
                   {item.label}
-                  {currentPath === item.href && (
-                    <span
-                      class="absolute inset-x-4 -bottom-[1.35rem] h-0.5 rounded-full bg-primary"
-                      aria-hidden="true"
-                    />
-                  )}
                 </a>
               </li>
             ))

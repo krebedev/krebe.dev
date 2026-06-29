@@ -72,8 +72,7 @@
   --color-twitter: var(--twitter);
   --color-github: var(--github);
 
-  --font-sans: "Instrument Sans", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Instrument Serif", ui-serif, Georgia, serif;
+  --font-sans: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
 }
 
 @layer base {
@@ -88,10 +87,40 @@
   h1,
   h2,
   h3 {
-    @apply font-display text-heading;
+    @apply font-sans font-medium tracking-tight text-heading;
   }
 
   ::selection {
     background-color: color-mix(in srgb, var(--orange) 35%, transparent);
+  }
+
+  .story-line + .story-line {
+    margin-top: 0.35em;
+  }
+
+  .story-reveal {
+    opacity: 0.18;
+    transform: translateY(0.4em);
+    transition:
+      opacity 0.55s ease,
+      transform 0.55s ease;
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+
+  .story-reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .story-reveal--punch.is-visible .story-line {
+    font-weight: 500;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .story-reveal {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
   }
 }
