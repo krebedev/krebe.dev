@@ -8,21 +8,39 @@ const closingSocial = [
   { label: "GitHub", href: site.social.github },
   { label: "LinkedIn", href: site.social.linkedIn },
 ] as const;
+
+let h2Count = 0;
+let indexInSection = 0;
+
+function revealDelay(block: (typeof storyBlocks)[number]): number {
+  if (block.type === "h2") {
+    indexInSection = 0;
+    return 0;
+  }
+
+  indexInSection += 1;
+  return indexInSection * 45;
+}
 ---
 
-<section
-  id="story"
-  class="story-section relative z-10 bg-muted pb-[10px]"
->
+<section id="story" class="story-section relative z-10 scroll-mt-[var(--site-header-height,5rem)]">
   <div class="mx-auto max-w-2xl px-6 py-20 sm:py-28 lg:px-10">
     {
-      storyBlocks.map((block, index) => {
+      storyBlocks.map((block) => {
+        const delay = revealDelay(block);
+
         if (block.type === "h2") {
+          const isFirst = h2Count === 0;
+          h2Count += 1;
+
           return (
             <div
               data-reveal
-              class="story-reveal mb-10 sm:mb-12"
-              style={`--reveal-delay: ${index * 30}ms`}
+              class:list={[
+                "story-reveal story-chapter",
+                !isFirst && "story-chapter--continued",
+              ]}
+              style={`--reveal-delay: ${delay}ms`}
             >
               <h2 class="text-2xl font-medium tracking-tight text-heading sm:text-3xl">
                 {block.text}
@@ -35,8 +53,8 @@ const closingSocial = [
           return (
             <div
               data-reveal
-              class="story-reveal mb-6 mt-14 sm:mt-16"
-              style={`--reveal-delay: ${index * 30}ms`}
+              class="story-reveal story-subhead"
+              style={`--reveal-delay: ${delay}ms`}
             >
               <h3 class="text-xs font-medium uppercase tracking-[0.15em] text-primary sm:text-sm">
                 {block.text}
@@ -51,17 +69,16 @@ const closingSocial = [
           <div
             data-reveal
             class:list={[
-              "story-reveal mb-8 sm:mb-10",
+              "story-reveal story-stanza",
               isShort && "story-reveal--punch",
             ]}
-            style={`--reveal-delay: ${index * 30}ms`}
+            style={`--reveal-delay: ${delay}ms`}
           >
             {block.lines.map((line) => (
               <p
                 class:list={[
-                  "story-line text-lg leading-relaxed text-foreground sm:text-xl",
-                  isQuestion(line) &&
-                    "border-l-2 border-primary/40 pl-5 italic",
+                  "story-line text-lg leading-[1.75] text-foreground sm:text-xl sm:leading-[1.7]",
+                  isQuestion(line) && "story-quote",
                 ]}
               >
                 {line}
@@ -75,15 +92,20 @@ const closingSocial = [
     <div
       id="contact"
       data-reveal
-      class="story-reveal mt-16 border-t border-border/60 pt-10 sm:mt-20 sm:pt-12"
+      class="story-reveal story-closing"
+      style={`--reveal-delay: ${(indexInSection + 1) * 45}ms`}
     >
-      <p class="text-lg leading-relaxed text-foreground sm:text-xl">
+      <p class="text-xs font-medium uppercase tracking-[0.15em] text-primary">
+        Get in touch
+      </p>
+
+      <p class="mt-4 text-lg leading-relaxed text-foreground sm:text-xl">
         {site.closing}
       </p>
 
       <a
         href={`mailto:${site.email}`}
-        class="mt-6 inline-block text-lg font-medium text-foreground transition hover:text-primary sm:text-xl"
+        class="story-link mt-6 inline-block text-xl font-medium text-foreground transition hover:text-primary sm:text-2xl"
       >
         {site.email}
       </a>
@@ -93,7 +115,7 @@ const closingSocial = [
           href={closingSocial[0].href}
           target="_blank"
           rel="noopener noreferrer"
-          class="transition hover:text-primary"
+          class="story-link transition hover:text-primary"
         >
           {closingSocial[0].label}
         </a>
@@ -102,7 +124,7 @@ const closingSocial = [
           href={closingSocial[1].href}
           target="_blank"
           rel="noopener noreferrer"
-          class="transition hover:text-primary"
+          class="story-link transition hover:text-primary"
         >
           {closingSocial[1].label}
         </a>

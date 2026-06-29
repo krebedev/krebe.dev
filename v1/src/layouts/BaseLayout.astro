@@ -11,7 +11,7 @@ interface Props {
   hideFooter?: boolean;
 }
 
-const { title, description = site.jobTitle, hideFooter = false } = Astro.props;
+const { title, description = site.heroStatement, hideFooter = false } = Astro.props;
 const pageTitle = title === site.name ? `${site.jobTitle} | ${site.name}` : `${title} | ${site.title}`;
 ---
 
@@ -21,7 +21,15 @@ const pageTitle = title === site.name ? `${site.jobTitle} | ${site.name}` : `${t
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={site.url} />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
     <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="canonical" href={site.url} />
     <title>{pageTitle}</title>
     <script is:inline>
       (function () {

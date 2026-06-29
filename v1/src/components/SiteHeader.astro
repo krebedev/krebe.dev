@@ -6,9 +6,13 @@ import { nav } from '../data/site';
 const currentPath = Astro.url.pathname;
 ---
 
-<header class="sticky top-0 z-50 w-full bg-background/90 backdrop-blur-md">
+<header class="sticky top-0 z-50 w-full border-b border-border/40 bg-background/90 backdrop-blur-md">
   <div class="flex w-full items-center justify-between gap-6 px-6 py-5 lg:px-10">
-    <a href="/" class="transition-opacity hover:opacity-80" aria-label="krebe.dev home">
+    <a
+      href="/"
+      class="rounded-sm transition-opacity hover:opacity-80"
+      aria-label="krebe.dev home"
+    >
       <Logo />
     </a>
 
@@ -23,7 +27,8 @@ const currentPath = Astro.url.pathname;
                     <a
                       href={item.href}
                       class:list={[
-                        'px-4 py-2 text-sm font-medium tracking-wide transition',
+                        'rounded-sm px-4 py-2 text-sm font-medium tracking-wide transition',
+                        'underline-offset-4 hover:underline',
                         currentPath === item.href
                           ? 'text-primary'
                           : 'text-muted-foreground hover:text-foreground',

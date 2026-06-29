@@ -44,9 +44,9 @@
   --primary: var(--orange);
   --primary-foreground: var(--stone-900);
   --primary-soft: var(--orange-soft);
-  --muted: #1a1714;
+  --muted: #211d1a;
   --muted-foreground: #a8a29e;
-  --border: #292524;
+  --border: #2e2926;
   --ring: var(--orange);
   --heading: #faf8f5;
 }
@@ -90,6 +90,11 @@
     @apply font-sans font-medium tracking-tight text-heading;
   }
 
+  a:focus-visible,
+  button:focus-visible {
+    @apply rounded-sm outline-2 outline-offset-2 outline-ring;
+  }
+
   ::selection {
     background-color: color-mix(in srgb, var(--orange) 35%, transparent);
   }
@@ -98,12 +103,60 @@
     margin-top: 0.35em;
   }
 
+  .story-section {
+    border-radius: 1.75rem 1.75rem 0 0;
+    background:
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--primary) 6%, var(--muted)) 0%,
+        var(--muted) 12rem
+      ),
+      var(--muted);
+    box-shadow: 0 -1px 0 color-mix(in srgb, var(--primary) 12%, var(--border));
+  }
+
+  #story:target {
+    scroll-margin-top: var(--site-header-height, 5rem);
+  }
+
+  .story-chapter {
+    @apply mb-10 sm:mb-12;
+  }
+
+  .story-chapter--continued {
+    @apply mt-16 border-t border-border/60 pt-12 sm:mt-20 sm:pt-14;
+  }
+
+  .story-subhead {
+    @apply mb-6 mt-14 sm:mt-16;
+  }
+
+  .story-stanza {
+    @apply mb-8 sm:mb-10;
+  }
+
+  .story-quote {
+    @apply my-2 rounded-r-lg border-l-2 border-primary bg-primary-soft/60 py-3 pl-5 pr-4 italic;
+  }
+
+  .story-reveal--punch .story-line {
+    @apply text-xl font-medium leading-snug tracking-tight sm:text-2xl;
+  }
+
+  .story-closing {
+    @apply mt-16 rounded-2xl bg-primary-soft px-6 py-10 sm:mt-20 sm:px-8 sm:py-12;
+  }
+
+  .story-link {
+    @apply underline decoration-primary/30 underline-offset-4 transition hover:decoration-primary;
+  }
+
   .story-reveal {
-    opacity: 0.18;
-    transform: translateY(0.4em);
+    opacity: 0.35;
+    transform: translateY(0.25em);
     transition:
-      opacity 0.55s ease,
-      transform 0.55s ease;
+      opacity 0.5s ease,
+      transform 0.5s ease;
     transition-delay: var(--reveal-delay, 0ms);
   }
 
@@ -112,8 +165,20 @@
     transform: translateY(0);
   }
 
-  .story-reveal--punch.is-visible .story-line {
-    font-weight: 500;
+  @supports (animation-timeline: scroll()) {
+    .hero-name-scroll {
+      animation: hero-name-scroll linear both;
+      animation-timeline: scroll(root);
+      animation-range: 0 55vh;
+    }
+
+    @keyframes hero-name-scroll {
+      to {
+        opacity: 0.3;
+        transform: scale(0.97);
+        transform-origin: left bottom;
+      }
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -121,6 +186,10 @@
       opacity: 1;
       transform: none;
       transition: none;
+    }
+
+    .hero-name-scroll {
+      animation: none;
     }
   }
 }
