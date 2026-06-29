@@ -4,7 +4,7 @@ export const site = {
   jobTitle: "Software Developer",
   heroEyebrow: "Software Developer",
   heroStatement:
-    "Crafting thoughtful apps with care for craft, clarity, and the people who use it.",
+    "Crafting thoughtful apps with clarity and care for the people who use them.",
   url: "https://www.krebe.dev",
   email: "solomon@krebe.dev",
   photo: "/krebeDev.jpg",
