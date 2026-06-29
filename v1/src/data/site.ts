@@ -16,4 +16,4 @@ export const site = {
   },
 } as const;
 
-export const nav = [] as const;
+export const nav = [{ label: "About", href: "/#story" }] as const;
