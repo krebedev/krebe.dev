@@ -123,6 +123,16 @@
     @apply mb-10 sm:mb-12;
   }
 
+  .story-intro {
+    @apply flex max-w-xs flex-col gap-4;
+  }
+
+  .story-intro-photo {
+    width: 7rem;
+    aspect-ratio: 1 / 1;
+    @apply rounded-full object-cover object-[center_20%] ring-1 ring-border;
+  }
+
   .story-chapter--continued {
     @apply mt-16 border-t border-border/60 pt-12 sm:mt-20 sm:pt-14;
   }
