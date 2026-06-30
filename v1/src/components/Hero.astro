@@ -13,6 +13,17 @@ import { site } from '../data/site';
   class="hero pointer-events-none fixed inset-x-0 z-0 flex flex-col"
   style="top: var(--site-header-height, 5rem); height: calc(100dvh - var(--site-header-height, 5rem));"
 >
+  <div class="hero-desktop-spacer flex-1" aria-hidden="true"></div>
+
+  <div id="hero-name-container" class="hero-name-scroll w-full px-6 pb-10 sm:px-8 sm:pb-12 lg:px-10 lg:pb-14">
+    <h1
+      id="hero-name"
+      class="block w-full font-sans font-medium leading-[0.92] tracking-[-0.03em] text-hero-name whitespace-nowrap"
+    >
+      {site.name}
+    </h1>
+  </div>
+
   <div id="hero-copy-bounds" class="absolute inset-x-0 top-0">
     <div
       id="hero-copy"
@@ -25,17 +36,6 @@ import { site } from '../data/site';
         {site.heroStatement}
       </p>
     </div>
-  </div>
-
-  <div class="flex-1" aria-hidden="true"></div>
-
-  <div id="hero-name-container" class="hero-name-scroll w-full px-6 pb-10 sm:px-8 sm:pb-12 lg:px-10 lg:pb-14">
-    <h1
-      id="hero-name"
-      class="block w-full font-sans font-medium leading-[0.92] tracking-[-0.03em] text-hero-name whitespace-nowrap"
-    >
-      {site.name}
-    </h1>
   </div>
 </section>
 
@@ -92,9 +92,18 @@ import { site } from '../data/site';
   };
 
   const syncCopyBounds = () => {
+    if (!hasFinePointer) return;
+
     const heroRect = hero.getBoundingClientRect();
     const nameRect = container.getBoundingClientRect();
     copyBounds.style.bottom = `${Math.max(0, heroRect.bottom - nameRect.top)}px`;
+  };
+
+  const resetStaticCopyLayout = () => {
+    copyBounds.style.bottom = '';
+    heroCopy.style.left = '';
+    heroCopy.style.top = '';
+    heroCopy.style.transform = '';
   };
 
   const clamp = (value: number, min: number, max: number) =>
@@ -136,6 +145,8 @@ import { site } from '../data/site';
   };
 
   const applyCopyPosition = (x: number, y: number) => {
+    if (!hasFinePointer) return;
+
     heroCopy.style.left = `${x}px`;
     heroCopy.style.top = `${y}px`;
     heroCopy.style.transform = 'translate(-50%, 0)';
@@ -187,6 +198,12 @@ import { site } from '../data/site';
   const update = () => {
     syncHeaderHeight();
     fitName();
+
+    if (!hasFinePointer) {
+      resetStaticCopyLayout();
+      return;
+    }
+
     syncCopyBounds();
 
     if (hasPointer) {
@@ -210,6 +227,8 @@ import { site } from '../data/site';
   new ResizeObserver(update).observe(heroCopy);
 
   window.addEventListener('resize', update, { passive: true });
+
+  window.matchMedia('(pointer: fine)').addEventListener('change', update);
 
   if (hasFinePointer) {
     window.addEventListener('pointermove', onPointerMove, { passive: true });
