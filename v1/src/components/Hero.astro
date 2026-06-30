@@ -13,13 +13,18 @@ import { site } from '../data/site';
   class="hero pointer-events-none fixed inset-x-0 z-0 flex flex-col"
   style="top: var(--site-header-height, 5rem); height: calc(100dvh - var(--site-header-height, 5rem));"
 >
-  <div class="px-6 pt-10 sm:px-8 sm:pt-12 lg:px-10 lg:pt-14">
-    <p class="text-xs font-medium uppercase tracking-[0.2em] text-primary sm:text-sm">
-      {site.heroEyebrow}
-    </p>
-    <p class="mt-4 max-w-md text-base leading-relaxed text-muted-foreground sm:text-lg">
-      {site.heroStatement}
-    </p>
+  <div id="hero-copy-bounds" class="absolute inset-x-0 top-0">
+    <div
+      id="hero-copy"
+      class="hero-copy absolute w-full max-w-md px-6 text-center sm:px-8 lg:px-10"
+    >
+      <p class="text-xs font-medium uppercase tracking-[0.2em] text-primary sm:text-sm">
+        {site.heroEyebrow}
+      </p>
+      <p class="mt-4 text-base leading-relaxed text-muted-foreground sm:text-lg">
+        {site.heroStatement}
+      </p>
+    </div>
   </div>
 
   <div class="flex-1" aria-hidden="true"></div>
@@ -36,17 +41,25 @@ import { site } from '../data/site';
 
 <script>
   const header = document.querySelector('header');
+  const hero = document.getElementById('hero');
+  const copyBounds = document.getElementById('hero-copy-bounds');
+  const heroCopy = document.getElementById('hero-copy');
   const container = document.getElementById('hero-name-container');
   const name = document.getElementById('hero-name');
 
+  if (!hero || !copyBounds || !heroCopy || !container || !name) {
+    throw new Error('Hero elements not found');
+  }
+
   const syncHeaderHeight = () => {
     if (!header) return;
-    const height = `${header.offsetHeight}px`;
-    document.documentElement.style.setProperty('--site-header-height', height);
+    document.documentElement.style.setProperty(
+      '--site-header-height',
+      `${header.offsetHeight}px`,
+    );
   };
 
   const getMaxTextWidth = () => {
-    if (!container) return 0;
     const styles = getComputedStyle(container);
     return (
       container.clientWidth -
@@ -56,8 +69,6 @@ import { site } from '../data/site';
   };
 
   const fitName = () => {
-    if (!name) return;
-
     const maxWidth = getMaxTextWidth();
     if (maxWidth <= 0) return;
 
@@ -80,9 +91,112 @@ import { site } from '../data/site';
     name.style.fontSize = `${best}px`;
   };
 
+  const syncCopyBounds = () => {
+    const heroRect = hero.getBoundingClientRect();
+    const nameRect = container.getBoundingClientRect();
+    copyBounds.style.bottom = `${Math.max(0, heroRect.bottom - nameRect.top)}px`;
+  };
+
+  const clamp = (value: number, min: number, max: number) =>
+    Math.min(Math.max(value, min), max);
+
+  const prefersReducedMotion = window.matchMedia(
+    '(prefers-reduced-motion: reduce)',
+  ).matches;
+  const hasFinePointer = window.matchMedia('(pointer: fine)').matches;
+
+  const POINTER_GAP = 12;
+  const SMOOTHNESS = 4.5;
+
+  let pointerX = 0;
+  let pointerY = 0;
+  let hasPointer = false;
+  let targetX = 0;
+  let targetY = 0;
+  let currentX = 0;
+  let currentY = 0;
+  let rafId = 0;
+  let lastFrameTime = 0;
+
+  const getTargetPosition = (clientX: number, clientY: number) => {
+    const boundsRect = copyBounds.getBoundingClientRect();
+    const copyWidth = heroCopy.offsetWidth;
+    const copyHeight = heroCopy.offsetHeight;
+
+    const x = clamp(clientX, boundsRect.left, boundsRect.right);
+    const y = clamp(clientY, boundsRect.top, boundsRect.bottom);
+
+    const relX = x - boundsRect.left;
+    const relY = y - boundsRect.top + POINTER_GAP;
+
+    return {
+      x: clamp(relX, copyWidth / 2, boundsRect.width - copyWidth / 2),
+      y: clamp(relY, 0, boundsRect.height - copyHeight),
+    };
+  };
+
+  const applyCopyPosition = (x: number, y: number) => {
+    heroCopy.style.left = `${x}px`;
+    heroCopy.style.top = `${y}px`;
+    heroCopy.style.transform = 'translate(-50%, 0)';
+  };
+
+  const setTargetFromPointer = (clientX: number, clientY: number) => {
+    const { x, y } = getTargetPosition(clientX, clientY);
+    targetX = x;
+    targetY = y;
+  };
+
+  const centerCopy = () => {
+    const boundsRect = copyBounds.getBoundingClientRect();
+    setTargetFromPointer(
+      boundsRect.left + boundsRect.width / 2,
+      boundsRect.top + boundsRect.height / 2 - POINTER_GAP,
+    );
+    currentX = targetX;
+    currentY = targetY;
+    applyCopyPosition(currentX, currentY);
+  };
+
+  const onPointerMove = (event: PointerEvent) => {
+    if (!hasFinePointer) return;
+
+    pointerX = event.clientX;
+    pointerY = event.clientY;
+    hasPointer = true;
+    setTargetFromPointer(pointerX, pointerY);
+
+    if (prefersReducedMotion) {
+      currentX = targetX;
+      currentY = targetY;
+      applyCopyPosition(currentX, currentY);
+    }
+  };
+
+  const tick = (time: number) => {
+    const delta = lastFrameTime ? (time - lastFrameTime) / 1000 : 1 / 60;
+    lastFrameTime = time;
+
+    const ease = 1 - Math.exp(-SMOOTHNESS * delta);
+    currentX += (targetX - currentX) * ease;
+    currentY += (targetY - currentY) * ease;
+    applyCopyPosition(currentX, currentY);
+    rafId = requestAnimationFrame(tick);
+  };
+
   const update = () => {
     syncHeaderHeight();
     fitName();
+    syncCopyBounds();
+
+    if (hasPointer) {
+      setTargetFromPointer(pointerX, pointerY);
+    } else {
+      centerCopy();
+      return;
+    }
+
+    applyCopyPosition(currentX, currentY);
   };
 
   update();
@@ -92,9 +206,25 @@ import { site } from '../data/site';
     new ResizeObserver(update).observe(header);
   }
 
-  if (container) {
-    new ResizeObserver(update).observe(container);
-  }
+  new ResizeObserver(update).observe(container);
+  new ResizeObserver(update).observe(heroCopy);
 
   window.addEventListener('resize', update, { passive: true });
+
+  if (hasFinePointer) {
+    window.addEventListener('pointermove', onPointerMove, { passive: true });
+
+    if (!prefersReducedMotion) {
+      rafId = requestAnimationFrame(tick);
+    }
+  }
+
+  document.addEventListener(
+    'astro:before-swap',
+    () => {
+      window.removeEventListener('pointermove', onPointerMove);
+      cancelAnimationFrame(rafId);
+    },
+    { once: true },
+  );
 </script>

@@ -3,6 +3,7 @@ import '@fontsource-variable/geist/wght.css';
 import '../styles/global.css';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
+import SiteCursor from '../components/SiteCursor.astro';
 import { site } from '../data/site';
 
 interface Props {
@@ -48,5 +49,6 @@ const pageTitle = title === site.name ? `${site.jobTitle} | ${site.name}` : `${t
       <slot />
     </main>
     {!hideFooter && <SiteFooter />}
+    <SiteCursor />
   </body>
 </html>

@@ -12,7 +12,7 @@ export const site = {
   closing: "If something here resonated with you, I'd love to hear from you.",
   social: {
     github: "https://github.com/krebedev",
-    linkedIn: "https://linkedin.com/krebedev",
+    linkedIn: "https://www.linkedin.com/in/krebedev/",
     twitter: "https://twitter.com/krebedev",
   },
 } as const;

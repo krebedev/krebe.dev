@@ -1,0 +1,68 @@
+<div id="site-cursor" class="site-cursor" aria-hidden="true"></div>
+
+<script>
+  const cursor = document.getElementById('site-cursor');
+  if (!cursor) throw new Error('Site cursor not found');
+
+  const canUseCustomCursor = window.matchMedia(
+    '(hover: hover) and (pointer: fine)',
+  ).matches;
+  const prefersReducedMotion = window.matchMedia(
+    '(prefers-reduced-motion: reduce)',
+  ).matches;
+
+  if (!canUseCustomCursor || prefersReducedMotion) {
+    cursor.remove();
+  } else {
+    document.documentElement.classList.add('has-custom-cursor');
+
+    const interactiveSelector =
+      'a, button, [role="button"], input, textarea, select, label, summary';
+
+    let x = -100;
+    let y = -100;
+    let visible = false;
+
+    const updateGrow = (clientX: number, clientY: number) => {
+      const target = document.elementFromPoint(clientX, clientY);
+      const isInteractive =
+        target instanceof Element && !!target.closest(interactiveSelector);
+      cursor.classList.toggle('is-grow', isInteractive);
+    };
+
+    const onPointerMove = (event: PointerEvent) => {
+      x = event.clientX;
+      y = event.clientY;
+      cursor.style.left = `${x}px`;
+      cursor.style.top = `${y}px`;
+
+      if (!visible) {
+        visible = true;
+        cursor.classList.add('is-visible');
+      }
+
+      updateGrow(x, y);
+    };
+
+    const onPointerLeave = () => {
+      cursor.classList.remove('is-visible', 'is-grow');
+      visible = false;
+    };
+
+    window.addEventListener('pointermove', onPointerMove, { passive: true });
+    document.documentElement.addEventListener('pointerleave', onPointerLeave);
+
+    document.addEventListener(
+      'astro:before-swap',
+      () => {
+        window.removeEventListener('pointermove', onPointerMove);
+        document.documentElement.removeEventListener(
+          'pointerleave',
+          onPointerLeave,
+        );
+        document.documentElement.classList.remove('has-custom-cursor');
+      },
+      { once: true },
+    );
+  }
+</script>
