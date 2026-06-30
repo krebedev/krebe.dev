@@ -1,5 +1,6 @@
 export const site = {
   title: "krebe.dev",
+  wordmark: "krebeDev",
   name: "Solomon Ekrebe",
   jobTitle: "Software Developer",
   heroEyebrow: "Software Developer",
