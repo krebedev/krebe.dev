@@ -33,6 +33,7 @@
   --border: var(--stone-200);
   --ring: var(--orange);
   --heading: var(--stone-900);
+  --story: #ffffff;
 }
 
 .dark {
@@ -44,11 +45,12 @@
   --primary: var(--orange);
   --primary-foreground: var(--stone-900);
   --primary-soft: var(--orange-soft);
-  --muted: #211d1a;
+  --muted: #1c1917;
   --muted-foreground: #a8a29e;
-  --border: #2e2926;
+  --border: #2a2623;
   --ring: var(--orange);
   --heading: #faf8f5;
+  --story: #141312;
 }
 
 @theme inline {
@@ -67,6 +69,7 @@
   --color-border: var(--border);
   --color-ring: var(--ring);
   --color-heading: var(--heading);
+  --color-story: var(--story);
 
   --color-linkedin: var(--linkedin);
   --color-twitter: var(--twitter);
@@ -105,14 +108,7 @@
 
   .story-section {
     border-radius: 1.75rem 1.75rem 0 0;
-    background:
-      linear-gradient(
-        180deg,
-        color-mix(in srgb, var(--primary) 6%, var(--muted)) 0%,
-        var(--muted) 12rem
-      ),
-      var(--muted);
-    box-shadow: 0 -1px 0 color-mix(in srgb, var(--primary) 12%, var(--border));
+    background-color: var(--story);
   }
 
   #story:target {
