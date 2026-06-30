@@ -151,6 +151,35 @@
     margin-top: 0.35em;
   }
 
+  @media (pointer: coarse) {
+    .hero {
+      justify-content: center;
+      align-items: center;
+      padding-inline: 1.5rem;
+    }
+
+    .hero-desktop-spacer {
+      display: none;
+    }
+
+    #hero-name-container {
+      width: 100%;
+      padding-bottom: 0;
+      text-align: center;
+    }
+
+    #hero-copy-bounds {
+      position: static;
+      width: 100%;
+      margin-top: 1.5rem;
+    }
+
+    .hero-copy {
+      position: static;
+      transform: none;
+    }
+  }
+
   .story-section {
     border-radius: 1.75rem 1.75rem 0 0;
     background-color: var(--story);
