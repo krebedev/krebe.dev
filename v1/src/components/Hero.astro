@@ -101,10 +101,39 @@ import { site } from '../data/site';
     return Number.isFinite(cursorSize) ? cursorSize / 2 + clearance : 78;
   };
 
-  const SMOOTHNESS = 4.5;
+  const COPY_SPRING = {
+    x: { stiffness: 160, damping: 26, mass: 1 },
+    y: { stiffness: 120, damping: 24, mass: 1 },
+  };
+  const COPY_SPRING_SNAP_DISTANCE = 0.25;
+  const COPY_SPRING_SNAP_VELOCITY = 0.05;
 
   const clamp = (value: number, min: number, max: number) =>
     Math.min(Math.max(value, min), max);
+
+  const springStep = (
+    current: number,
+    target: number,
+    velocity: number,
+    delta: number,
+    spring: { stiffness: number; damping: number; mass: number },
+  ) => {
+    const acceleration =
+      (-spring.stiffness * (current - target) - spring.damping * velocity) /
+      spring.mass;
+    let nextVelocity = velocity + acceleration * delta;
+    let nextCurrent = current + nextVelocity * delta;
+
+    if (
+      Math.abs(target - nextCurrent) < COPY_SPRING_SNAP_DISTANCE &&
+      Math.abs(nextVelocity) < COPY_SPRING_SNAP_VELOCITY
+    ) {
+      nextCurrent = target;
+      nextVelocity = 0;
+    }
+
+    return { current: nextCurrent, velocity: nextVelocity };
+  };
 
   const copy = {
     pointerX: 0,
@@ -114,11 +143,19 @@ import { site } from '../data/site';
     targetY: 0,
     currentX: 0,
     currentY: 0,
+    velocityX: 0,
+    velocityY: 0,
     lastFrameTime: 0,
     motionRafId: 0,
     layoutRafId: 0,
     pointerListenerActive: false,
     motionLoopActive: false,
+  };
+
+  const resetCopyMotion = () => {
+    copy.velocityX = 0;
+    copy.velocityY = 0;
+    copy.lastFrameTime = 0;
   };
 
   const syncHeaderHeight = () => {
@@ -168,61 +205,77 @@ import { site } from '../data/site';
     copyBounds.style.bottom = `${Math.max(0, heroRect.bottom - nameRect.top)}px`;
   };
 
+  const NAME_DEAD_ZONE = 20;
+
   const getTargetPosition = (clientX: number, clientY: number) => {
     const boundsRect = copyBounds.getBoundingClientRect();
     const copyWidth = heroCopy.offsetWidth;
     const copyHeight = heroCopy.offsetHeight;
+    const gap = getPointerGap();
 
     const x = clamp(clientX, boundsRect.left, boundsRect.right);
     const y = clamp(clientY, boundsRect.top, boundsRect.bottom);
 
     const relX = x - boundsRect.left;
-    const relY = y - boundsRect.top + getPointerGap();
+    const relPointerY = y - boundsRect.top;
+    const maxCopyTop = Math.max(0, boundsRect.height - copyHeight - NAME_DEAD_ZONE);
+
+    const belowTop = relPointerY + gap;
+    const aboveTop = relPointerY - gap - copyHeight;
+
+    let relY: number;
+
+    if (belowTop <= maxCopyTop) {
+      relY = belowTop;
+    } else if (aboveTop >= 0) {
+      relY = aboveTop;
+    } else {
+      relY = clamp(belowTop, 0, maxCopyTop);
+    }
 
     return {
       x: clamp(relX, copyWidth / 2, boundsRect.width - copyWidth / 2),
-      y: clamp(relY, 0, boundsRect.height - copyHeight),
+      y: clamp(relY, 0, maxCopyTop),
     };
   };
 
   const applyCopyPosition = (x: number, y: number) => {
-    heroCopy.style.left = `${x}px`;
-    heroCopy.style.top = `${y}px`;
-    heroCopy.style.transform = 'translate(-50%, 0)';
-  };
-
-  const setCopyTarget = (clientX: number, clientY: number) => {
-    const { x, y } = getTargetPosition(clientX, clientY);
-    copy.targetX = x;
-    copy.targetY = y;
+    heroCopy.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, 0)`;
   };
 
   const syncCopyTarget = () => {
     if (copy.hasPointer) {
-      setCopyTarget(copy.pointerX, copy.pointerY);
+      const { x, y } = getTargetPosition(copy.pointerX, copy.pointerY);
+      copy.targetX = x;
+      copy.targetY = y;
       return;
     }
 
     const boundsRect = copyBounds.getBoundingClientRect();
-    setCopyTarget(
+    const { x, y } = getTargetPosition(
       boundsRect.left + boundsRect.width / 2,
       boundsRect.top + boundsRect.height / 2 - getPointerGap(),
     );
+    copy.targetX = x;
+    copy.targetY = y;
     copy.currentX = copy.targetX;
     copy.currentY = copy.targetY;
+    resetCopyMotion();
+  };
+
+  const prepareInteractiveCopy = () => {
+    heroCopy.style.left = '0';
+    heroCopy.style.top = '0';
+    heroCopy.style.willChange = 'transform';
   };
 
   const applyCopyMotion = () => {
-    if (prefersReducedMotion) {
-      copy.currentX = copy.targetX;
-      copy.currentY = copy.targetY;
-    }
-
     applyCopyPosition(copy.currentX, copy.currentY);
   };
 
   const syncInteractiveCopyLayout = () => {
     syncCopyBounds();
+    prepareInteractiveCopy();
     syncCopyTarget();
     applyCopyMotion();
   };
@@ -242,7 +295,7 @@ import { site } from '../data/site';
     const shouldAnimate = interactive && !prefersReducedMotion;
 
     if (shouldAnimate && !copy.motionLoopActive) {
-      copy.lastFrameTime = 0;
+      resetCopyMotion();
       copy.motionLoopActive = true;
       copy.motionRafId = requestAnimationFrame(runCopyMotion);
     } else if (!shouldAnimate && copy.motionLoopActive) {
@@ -290,24 +343,39 @@ import { site } from '../data/site';
     copy.pointerX = event.clientX;
     copy.pointerY = event.clientY;
     copy.hasPointer = true;
-    setCopyTarget(copy.pointerX, copy.pointerY);
-
-    if (prefersReducedMotion) {
-      copy.currentX = copy.targetX;
-      copy.currentY = copy.targetY;
-      applyCopyPosition(copy.currentX, copy.currentY);
-    }
   };
 
   const runCopyMotion = (time: number) => {
     if (!copy.motionLoopActive) return;
 
+    if (copy.hasPointer) {
+      const { x, y } = getTargetPosition(copy.pointerX, copy.pointerY);
+      copy.targetX = x;
+      copy.targetY = y;
+    }
+
     const delta = copy.lastFrameTime ? (time - copy.lastFrameTime) / 1000 : 1 / 60;
     copy.lastFrameTime = time;
 
-    const ease = 1 - Math.exp(-SMOOTHNESS * delta);
-    copy.currentX += (copy.targetX - copy.currentX) * ease;
-    copy.currentY += (copy.targetY - copy.currentY) * ease;
+    const xMotion = springStep(
+      copy.currentX,
+      copy.targetX,
+      copy.velocityX,
+      delta,
+      COPY_SPRING.x,
+    );
+    const yMotion = springStep(
+      copy.currentY,
+      copy.targetY,
+      copy.velocityY,
+      delta,
+      COPY_SPRING.y,
+    );
+
+    copy.currentX = xMotion.current;
+    copy.currentY = yMotion.current;
+    copy.velocityX = xMotion.velocity;
+    copy.velocityY = yMotion.velocity;
     applyCopyPosition(copy.currentX, copy.currentY);
     copy.motionRafId = requestAnimationFrame(runCopyMotion);
   };
