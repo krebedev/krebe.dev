@@ -151,32 +151,15 @@
     margin-top: 0.35em;
   }
 
-  @media (pointer: coarse) {
-    .hero {
-      justify-content: center;
-      align-items: center;
-      padding-inline: 1.5rem;
-    }
-
-    .hero-desktop-spacer {
-      display: none;
-    }
-
+  @media (pointer: fine) and (width >= 48rem) {
     #hero-name-container {
-      width: 100%;
-      padding-bottom: 0;
-      text-align: center;
+      padding-bottom: 2rem;
     }
 
-    #hero-copy-bounds {
-      position: static;
-      width: 100%;
-      margin-top: 1.5rem;
-    }
-
-    .hero-copy {
-      position: static;
-      transform: none;
+    @media (width >= 64rem) {
+      #hero-name-container {
+        padding-bottom: 2.75rem;
+      }
     }
   }
 
@@ -271,5 +254,43 @@
     .hero-name-scroll {
       animation: none;
     }
+  }
+}
+
+/* Outside @layer so these override Tailwind utilities (e.g. .absolute) */
+@media (pointer: coarse), (width < 48rem) {
+  #hero {
+    justify-content: center;
+    align-items: center;
+    gap: 1.25rem;
+    padding-inline: 1.5rem;
+  }
+
+  #hero .hero-desktop-spacer {
+    display: none !important;
+  }
+
+  #hero-name-container {
+    order: 1;
+    width: 100%;
+    padding-bottom: 0 !important;
+    text-align: center;
+  }
+
+  #hero-copy-bounds {
+    order: 2;
+    position: static !important;
+    inset: auto !important;
+    top: auto !important;
+    bottom: auto !important;
+    width: 100%;
+  }
+
+  #hero-copy {
+    position: static !important;
+    inset: auto !important;
+    left: auto !important;
+    top: auto !important;
+    transform: none !important;
   }
 }

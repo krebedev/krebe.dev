@@ -92,7 +92,7 @@ import { site } from '../data/site';
   };
 
   const syncCopyBounds = () => {
-    if (!hasFinePointer) return;
+    if (!isInteractiveHero()) return;
 
     const heroRect = hero.getBoundingClientRect();
     const nameRect = container.getBoundingClientRect();
@@ -100,10 +100,8 @@ import { site } from '../data/site';
   };
 
   const resetStaticCopyLayout = () => {
-    copyBounds.style.bottom = '';
-    heroCopy.style.left = '';
-    heroCopy.style.top = '';
-    heroCopy.style.transform = '';
+    copyBounds.style.cssText = '';
+    heroCopy.style.cssText = '';
   };
 
   const clamp = (value: number, min: number, max: number) =>
@@ -112,7 +110,15 @@ import { site } from '../data/site';
   const prefersReducedMotion = window.matchMedia(
     '(prefers-reduced-motion: reduce)',
   ).matches;
-  const hasFinePointer = window.matchMedia('(pointer: fine)').matches;
+  const stackedHeroLayoutMq = window.matchMedia(
+    '(pointer: coarse), (max-width: 47.99rem)',
+  );
+  const interactiveHeroMq = window.matchMedia(
+    '(pointer: fine) and (min-width: 48rem)',
+  );
+
+  const isStackedHeroLayout = () => stackedHeroLayoutMq.matches;
+  const isInteractiveHero = () => interactiveHeroMq.matches;
 
   const POINTER_GAP = 12;
   const SMOOTHNESS = 4.5;
@@ -145,7 +151,7 @@ import { site } from '../data/site';
   };
 
   const applyCopyPosition = (x: number, y: number) => {
-    if (!hasFinePointer) return;
+    if (!isInteractiveHero()) return;
 
     heroCopy.style.left = `${x}px`;
     heroCopy.style.top = `${y}px`;
@@ -170,7 +176,7 @@ import { site } from '../data/site';
   };
 
   const onPointerMove = (event: PointerEvent) => {
-    if (!hasFinePointer) return;
+    if (!isInteractiveHero()) return;
 
     pointerX = event.clientX;
     pointerY = event.clientY;
@@ -198,8 +204,9 @@ import { site } from '../data/site';
   const update = () => {
     syncHeaderHeight();
     fitName();
+    hero.classList.toggle('hero--stacked', isStackedHeroLayout());
 
-    if (!hasFinePointer) {
+    if (isStackedHeroLayout()) {
       resetStaticCopyLayout();
       return;
     }
@@ -226,11 +233,13 @@ import { site } from '../data/site';
   new ResizeObserver(update).observe(container);
   new ResizeObserver(update).observe(heroCopy);
 
-  window.addEventListener('resize', update, { passive: true });
+  const onLayoutChange = () => update();
 
-  window.matchMedia('(pointer: fine)').addEventListener('change', update);
+  window.addEventListener('resize', onLayoutChange, { passive: true });
+  stackedHeroLayoutMq.addEventListener('change', onLayoutChange);
+  interactiveHeroMq.addEventListener('change', onLayoutChange);
 
-  if (hasFinePointer) {
+  if (isInteractiveHero()) {
     window.addEventListener('pointermove', onPointerMove, { passive: true });
 
     if (!prefersReducedMotion) {
@@ -242,6 +251,9 @@ import { site } from '../data/site';
     'astro:before-swap',
     () => {
       window.removeEventListener('pointermove', onPointerMove);
+      window.removeEventListener('resize', onLayoutChange);
+      stackedHeroLayoutMq.removeEventListener('change', onLayoutChange);
+      interactiveHeroMq.removeEventListener('change', onLayoutChange);
       cancelAnimationFrame(rafId);
     },
     { once: true },
