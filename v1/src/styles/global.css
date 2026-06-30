@@ -34,8 +34,6 @@
   --ring: var(--orange);
   --heading: var(--stone-900);
   --hero-name: #524c45;
-  --hero-wash-bottom: color-mix(in srgb, var(--orange) 8%, transparent);
-  --hero-wash-top: color-mix(in srgb, var(--orange-soft) 40%, transparent);
   --site-cursor-size: 100px;
   --story: #ffffff;
 }
@@ -55,8 +53,6 @@
   --ring: var(--orange);
   --heading: #faf8f5;
   --hero-name: #c9c1b8;
-  --hero-wash-bottom: color-mix(in srgb, var(--orange) 14%, transparent);
-  --hero-wash-top: color-mix(in srgb, var(--orange) 5%, transparent);
   --story: #141312;
 }
 
@@ -258,30 +254,6 @@
 }
 
 /* Outside @layer so these override Tailwind utilities (e.g. .absolute) */
-#hero {
-  isolation: isolate;
-  overflow: hidden;
-}
-
-#hero::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background:
-    radial-gradient(
-      ellipse 92% 74% at 50% 92%,
-      var(--hero-wash-bottom),
-      transparent 70%
-    ),
-    radial-gradient(
-      ellipse 78% 50% at 50% -6%,
-      var(--hero-wash-top),
-      transparent 60%
-    );
-}
-
 #hero.hero--stacked {
   justify-content: center;
   align-items: center;
