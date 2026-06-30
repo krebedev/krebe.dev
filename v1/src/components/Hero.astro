@@ -39,17 +39,74 @@ import { site } from '../data/site';
   </div>
 </section>
 
+<script is:inline>
+  (function () {
+    const hero = document.getElementById('hero');
+    if (!hero) return;
+
+    const prefersReducedMotion = window.matchMedia(
+      '(prefers-reduced-motion: reduce)',
+    ).matches;
+    const stacked = window.matchMedia(
+      '(pointer: coarse), (pointer: none), (max-width: 47.99rem)',
+    ).matches;
+
+    if (stacked || prefersReducedMotion) {
+      hero.classList.add('hero--stacked');
+    }
+  })();
+</script>
+
 <script>
   const header = document.querySelector('header');
   const hero = document.getElementById('hero');
   const copyBounds = document.getElementById('hero-copy-bounds');
   const heroCopy = document.getElementById('hero-copy');
-  const container = document.getElementById('hero-name-container');
+  const nameContainer = document.getElementById('hero-name-container');
   const name = document.getElementById('hero-name');
 
-  if (!hero || !copyBounds || !heroCopy || !container || !name) {
+  if (!hero || !copyBounds || !heroCopy || !nameContainer || !name) {
     throw new Error('Hero elements not found');
   }
+
+  const prefersReducedMotion = window.matchMedia(
+    '(prefers-reduced-motion: reduce)',
+  ).matches;
+  const stackedHeroLayoutMq = window.matchMedia(
+    '(pointer: coarse), (pointer: none), (max-width: 47.99rem)',
+  );
+  const interactiveHeroMq = window.matchMedia(
+    '(pointer: fine) and (hover: hover) and (min-width: 48rem)',
+  );
+
+  let usingKeyboard = false;
+
+  const isStackedHeroLayout = () =>
+    stackedHeroLayoutMq.matches || usingKeyboard || prefersReducedMotion;
+
+  const isInteractiveHero = () =>
+    interactiveHeroMq.matches && !usingKeyboard && !prefersReducedMotion;
+
+  const POINTER_GAP = 12;
+  const SMOOTHNESS = 4.5;
+
+  const clamp = (value: number, min: number, max: number) =>
+    Math.min(Math.max(value, min), max);
+
+  const copy = {
+    pointerX: 0,
+    pointerY: 0,
+    hasPointer: false,
+    targetX: 0,
+    targetY: 0,
+    currentX: 0,
+    currentY: 0,
+    lastFrameTime: 0,
+    motionRafId: 0,
+    layoutRafId: 0,
+    pointerListenerActive: false,
+    motionLoopActive: false,
+  };
 
   const syncHeaderHeight = () => {
     if (!header) return;
@@ -59,17 +116,13 @@ import { site } from '../data/site';
     );
   };
 
-  const getMaxTextWidth = () => {
-    const styles = getComputedStyle(container);
-    return (
-      container.clientWidth -
-      parseFloat(styles.paddingLeft) -
-      parseFloat(styles.paddingRight)
-    );
-  };
-
   const fitName = () => {
-    const maxWidth = getMaxTextWidth();
+    const styles = getComputedStyle(nameContainer);
+    const maxWidth =
+      nameContainer.clientWidth -
+      parseFloat(styles.paddingLeft) -
+      parseFloat(styles.paddingRight);
+
     if (maxWidth <= 0) return;
 
     let low = 16;
@@ -91,47 +144,16 @@ import { site } from '../data/site';
     name.style.fontSize = `${best}px`;
   };
 
-  const syncCopyBounds = () => {
-    if (!isInteractiveHero()) return;
-
-    const heroRect = hero.getBoundingClientRect();
-    const nameRect = container.getBoundingClientRect();
-    copyBounds.style.bottom = `${Math.max(0, heroRect.bottom - nameRect.top)}px`;
-  };
-
   const resetStaticCopyLayout = () => {
     copyBounds.style.cssText = '';
     heroCopy.style.cssText = '';
   };
 
-  const clamp = (value: number, min: number, max: number) =>
-    Math.min(Math.max(value, min), max);
-
-  const prefersReducedMotion = window.matchMedia(
-    '(prefers-reduced-motion: reduce)',
-  ).matches;
-  const stackedHeroLayoutMq = window.matchMedia(
-    '(pointer: coarse), (max-width: 47.99rem)',
-  );
-  const interactiveHeroMq = window.matchMedia(
-    '(pointer: fine) and (min-width: 48rem)',
-  );
-
-  const isStackedHeroLayout = () => stackedHeroLayoutMq.matches;
-  const isInteractiveHero = () => interactiveHeroMq.matches;
-
-  const POINTER_GAP = 12;
-  const SMOOTHNESS = 4.5;
-
-  let pointerX = 0;
-  let pointerY = 0;
-  let hasPointer = false;
-  let targetX = 0;
-  let targetY = 0;
-  let currentX = 0;
-  let currentY = 0;
-  let rafId = 0;
-  let lastFrameTime = 0;
+  const syncCopyBounds = () => {
+    const heroRect = hero.getBoundingClientRect();
+    const nameRect = nameContainer.getBoundingClientRect();
+    copyBounds.style.bottom = `${Math.max(0, heroRect.bottom - nameRect.top)}px`;
+  };
 
   const getTargetPosition = (clientX: number, clientY: number) => {
     const boundsRect = copyBounds.getBoundingClientRect();
@@ -151,110 +173,171 @@ import { site } from '../data/site';
   };
 
   const applyCopyPosition = (x: number, y: number) => {
-    if (!isInteractiveHero()) return;
-
     heroCopy.style.left = `${x}px`;
     heroCopy.style.top = `${y}px`;
     heroCopy.style.transform = 'translate(-50%, 0)';
   };
 
-  const setTargetFromPointer = (clientX: number, clientY: number) => {
+  const setCopyTarget = (clientX: number, clientY: number) => {
     const { x, y } = getTargetPosition(clientX, clientY);
-    targetX = x;
-    targetY = y;
+    copy.targetX = x;
+    copy.targetY = y;
   };
 
-  const centerCopy = () => {
+  const syncCopyTarget = () => {
+    if (copy.hasPointer) {
+      setCopyTarget(copy.pointerX, copy.pointerY);
+      return;
+    }
+
     const boundsRect = copyBounds.getBoundingClientRect();
-    setTargetFromPointer(
+    setCopyTarget(
       boundsRect.left + boundsRect.width / 2,
       boundsRect.top + boundsRect.height / 2 - POINTER_GAP,
     );
-    currentX = targetX;
-    currentY = targetY;
-    applyCopyPosition(currentX, currentY);
+    copy.currentX = copy.targetX;
+    copy.currentY = copy.targetY;
+  };
+
+  const applyCopyMotion = () => {
+    if (prefersReducedMotion) {
+      copy.currentX = copy.targetX;
+      copy.currentY = copy.targetY;
+    }
+
+    applyCopyPosition(copy.currentX, copy.currentY);
+  };
+
+  const syncInteractiveCopyLayout = () => {
+    syncCopyBounds();
+    syncCopyTarget();
+    applyCopyMotion();
+  };
+
+  const syncInteractionMode = () => {
+    const interactive = isInteractiveHero();
+
+    if (interactive && !copy.pointerListenerActive) {
+      window.addEventListener('pointermove', onPointerMove, { passive: true });
+      copy.pointerListenerActive = true;
+    } else if (!interactive && copy.pointerListenerActive) {
+      window.removeEventListener('pointermove', onPointerMove);
+      copy.pointerListenerActive = false;
+      copy.hasPointer = false;
+    }
+
+    const shouldAnimate = interactive && !prefersReducedMotion;
+
+    if (shouldAnimate && !copy.motionLoopActive) {
+      copy.lastFrameTime = 0;
+      copy.motionLoopActive = true;
+      copy.motionRafId = requestAnimationFrame(runCopyMotion);
+    } else if (!shouldAnimate && copy.motionLoopActive) {
+      cancelAnimationFrame(copy.motionRafId);
+      copy.motionLoopActive = false;
+    }
+  };
+
+  const updateLayout = () => {
+    syncHeaderHeight();
+    fitName();
+
+    const stacked = isStackedHeroLayout();
+    const interactive = isInteractiveHero();
+
+    hero.classList.toggle('hero--stacked', stacked);
+    document.documentElement.classList.toggle('hero-interactive', interactive);
+    if (interactive) {
+      heroCopy.setAttribute('aria-hidden', 'true');
+    } else {
+      heroCopy.removeAttribute('aria-hidden');
+    }
+
+    if (stacked) {
+      resetStaticCopyLayout();
+    } else {
+      syncInteractiveCopyLayout();
+    }
+
+    syncInteractionMode();
+  };
+
+  const scheduleLayoutUpdate = () => {
+    if (copy.layoutRafId) return;
+
+    copy.layoutRafId = requestAnimationFrame(() => {
+      copy.layoutRafId = 0;
+      updateLayout();
+    });
   };
 
   const onPointerMove = (event: PointerEvent) => {
     if (!isInteractiveHero()) return;
 
-    pointerX = event.clientX;
-    pointerY = event.clientY;
-    hasPointer = true;
-    setTargetFromPointer(pointerX, pointerY);
+    copy.pointerX = event.clientX;
+    copy.pointerY = event.clientY;
+    copy.hasPointer = true;
+    setCopyTarget(copy.pointerX, copy.pointerY);
 
     if (prefersReducedMotion) {
-      currentX = targetX;
-      currentY = targetY;
-      applyCopyPosition(currentX, currentY);
+      copy.currentX = copy.targetX;
+      copy.currentY = copy.targetY;
+      applyCopyPosition(copy.currentX, copy.currentY);
     }
   };
 
-  const tick = (time: number) => {
-    const delta = lastFrameTime ? (time - lastFrameTime) / 1000 : 1 / 60;
-    lastFrameTime = time;
+  const runCopyMotion = (time: number) => {
+    if (!copy.motionLoopActive) return;
+
+    const delta = copy.lastFrameTime ? (time - copy.lastFrameTime) / 1000 : 1 / 60;
+    copy.lastFrameTime = time;
 
     const ease = 1 - Math.exp(-SMOOTHNESS * delta);
-    currentX += (targetX - currentX) * ease;
-    currentY += (targetY - currentY) * ease;
-    applyCopyPosition(currentX, currentY);
-    rafId = requestAnimationFrame(tick);
+    copy.currentX += (copy.targetX - copy.currentX) * ease;
+    copy.currentY += (copy.targetY - copy.currentY) * ease;
+    applyCopyPosition(copy.currentX, copy.currentY);
+    copy.motionRafId = requestAnimationFrame(runCopyMotion);
   };
 
-  const update = () => {
-    syncHeaderHeight();
-    fitName();
-    hero.classList.toggle('hero--stacked', isStackedHeroLayout());
-
-    if (isStackedHeroLayout()) {
-      resetStaticCopyLayout();
-      return;
-    }
-
-    syncCopyBounds();
-
-    if (hasPointer) {
-      setTargetFromPointer(pointerX, pointerY);
-    } else {
-      centerCopy();
-      return;
-    }
-
-    applyCopyPosition(currentX, currentY);
+  const onKeyboardUse = (event: KeyboardEvent) => {
+    if (event.key !== 'Tab' || usingKeyboard) return;
+    usingKeyboard = true;
+    scheduleLayoutUpdate();
   };
 
-  update();
-  document.fonts?.ready.then(update);
+  const onPointerUse = () => {
+    if (!usingKeyboard) return;
+    usingKeyboard = false;
+    scheduleLayoutUpdate();
+  };
 
-  if (header) {
-    new ResizeObserver(update).observe(header);
-  }
+  const layoutObserver = new ResizeObserver(scheduleLayoutUpdate);
+  const layoutTargets = [hero, nameContainer, copyBounds, heroCopy];
+  if (header) layoutTargets.push(header);
+  layoutTargets.forEach((target) => layoutObserver.observe(target));
 
-  new ResizeObserver(update).observe(container);
-  new ResizeObserver(update).observe(heroCopy);
+  scheduleLayoutUpdate();
+  document.fonts?.ready.then(scheduleLayoutUpdate);
 
-  const onLayoutChange = () => update();
-
-  window.addEventListener('resize', onLayoutChange, { passive: true });
-  stackedHeroLayoutMq.addEventListener('change', onLayoutChange);
-  interactiveHeroMq.addEventListener('change', onLayoutChange);
-
-  if (isInteractiveHero()) {
-    window.addEventListener('pointermove', onPointerMove, { passive: true });
-
-    if (!prefersReducedMotion) {
-      rafId = requestAnimationFrame(tick);
-    }
-  }
+  window.addEventListener('resize', scheduleLayoutUpdate, { passive: true });
+  window.addEventListener('keydown', onKeyboardUse, { passive: true });
+  window.addEventListener('pointerdown', onPointerUse, { passive: true });
+  stackedHeroLayoutMq.addEventListener('change', scheduleLayoutUpdate);
+  interactiveHeroMq.addEventListener('change', scheduleLayoutUpdate);
 
   document.addEventListener(
     'astro:before-swap',
     () => {
+      layoutObserver.disconnect();
+      window.removeEventListener('resize', scheduleLayoutUpdate);
+      window.removeEventListener('keydown', onKeyboardUse);
+      window.removeEventListener('pointerdown', onPointerUse);
       window.removeEventListener('pointermove', onPointerMove);
-      window.removeEventListener('resize', onLayoutChange);
-      stackedHeroLayoutMq.removeEventListener('change', onLayoutChange);
-      interactiveHeroMq.removeEventListener('change', onLayoutChange);
-      cancelAnimationFrame(rafId);
+      stackedHeroLayoutMq.removeEventListener('change', scheduleLayoutUpdate);
+      interactiveHeroMq.removeEventListener('change', scheduleLayoutUpdate);
+      document.documentElement.classList.remove('hero-interactive');
+      cancelAnimationFrame(copy.layoutRafId);
+      cancelAnimationFrame(copy.motionRafId);
     },
     { once: true },
   );
