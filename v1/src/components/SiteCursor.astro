@@ -19,35 +19,107 @@
     const interactiveSelector =
       'a, button, [role="button"], input, textarea, select, label, summary';
 
-    let x = -100;
-    let y = -100;
+    const SCALE_DEFAULT = 1;
+    const SCALE_SHRINK = 0.4;
+    const POSITION_SMOOTHNESS = 32;
+    const SCALE_SMOOTHNESS = 14;
+    const SETTLE_EPSILON = 0.05;
+
+    let pointerX = -100;
+    let pointerY = -100;
+    let currentX = -100;
+    let currentY = -100;
+    let targetScale = SCALE_DEFAULT;
+    let currentScale = SCALE_DEFAULT;
+    let lastFrameTime = 0;
+    let motionRafId = 0;
+    let active = false;
     let visible = false;
 
-    const updateGrow = (clientX: number, clientY: number) => {
+    const getTargetScale = (clientX: number, clientY: number) => {
       const target = document.elementFromPoint(clientX, clientY);
       const isInteractive =
         target instanceof Element && !!target.closest(interactiveSelector);
-      cursor.classList.toggle('is-grow', isInteractive);
+      return isInteractive ? SCALE_SHRINK : SCALE_DEFAULT;
+    };
+
+    const applyTransform = () => {
+      cursor.style.transform = `translate3d(${currentX}px, ${currentY}px, 0) translate(-50%, -50%) scale(${currentScale})`;
+    };
+
+    const isSettled = () =>
+      Math.hypot(pointerX - currentX, pointerY - currentY) < SETTLE_EPSILON &&
+      Math.abs(targetScale - currentScale) < 0.001;
+
+    const runMotion = (time: number) => {
+      motionRafId = requestAnimationFrame(runMotion);
+
+      if (!active) return;
+
+      const delta = lastFrameTime ? (time - lastFrameTime) / 1000 : 1 / 60;
+      lastFrameTime = time;
+
+      const positionEase = 1 - Math.exp(-POSITION_SMOOTHNESS * delta);
+      currentX += (pointerX - currentX) * positionEase;
+      currentY += (pointerY - currentY) * positionEase;
+
+      const scaleEase = 1 - Math.exp(-SCALE_SMOOTHNESS * delta);
+      currentScale += (targetScale - currentScale) * scaleEase;
+
+      applyTransform();
+
+      if (isSettled()) {
+        currentX = pointerX;
+        currentY = pointerY;
+        currentScale = targetScale;
+        applyTransform();
+        active = false;
+        lastFrameTime = 0;
+      }
+    };
+
+    const wakeMotion = () => {
+      if (!active) {
+        active = true;
+        lastFrameTime = 0;
+        if (!motionRafId) {
+          motionRafId = requestAnimationFrame(runMotion);
+        }
+      }
     };
 
     const onPointerMove = (event: PointerEvent) => {
-      x = event.clientX;
-      y = event.clientY;
-      cursor.style.left = `${x}px`;
-      cursor.style.top = `${y}px`;
+      pointerX = event.clientX;
+      pointerY = event.clientY;
+      targetScale = getTargetScale(pointerX, pointerY);
 
       if (!visible) {
         visible = true;
+        currentX = pointerX;
+        currentY = pointerY;
+        currentScale = targetScale;
         cursor.classList.add('is-visible');
+        applyTransform();
       }
 
-      updateGrow(x, y);
+      wakeMotion();
     };
 
     const onPointerLeave = () => {
-      cursor.classList.remove('is-visible', 'is-grow');
+      active = false;
       visible = false;
+      cursor.classList.remove('is-visible');
+      pointerX = -100;
+      pointerY = -100;
+      currentX = -100;
+      currentY = -100;
+      targetScale = SCALE_DEFAULT;
+      currentScale = SCALE_DEFAULT;
+      lastFrameTime = 0;
+      applyTransform();
     };
+
+    motionRafId = requestAnimationFrame(runMotion);
 
     window.addEventListener('pointermove', onPointerMove, { passive: true });
     document.documentElement.addEventListener('pointerleave', onPointerLeave);
@@ -55,6 +127,9 @@
     document.addEventListener(
       'astro:before-swap',
       () => {
+        active = false;
+        cancelAnimationFrame(motionRafId);
+        motionRafId = 0;
         window.removeEventListener('pointermove', onPointerMove);
         document.documentElement.removeEventListener(
           'pointerleave',
