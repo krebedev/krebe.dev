@@ -1,4 +1,6 @@
 ---
+import { site } from "../data/site";
+
 interface Props {
   class?: string;
 }
@@ -6,24 +8,23 @@ interface Props {
 const { class: className } = Astro.props;
 ---
 
-<div class:list={['inline-flex items-center gap-2.5', className]}>
+<div class:list={["inline-flex items-center gap-3", className]}>
   <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 20 20"
-    fill="none"
-    class="h-5 w-5 shrink-0"
-    aria-hidden="true"
+    xmlns='http://www.w3.org/2000/svg'
+    viewBox='0 0 38.184 38.184'
+    fill='none'
+    class='h-6 w-6 shrink-0'
+    aria-hidden='true'
   >
     <path
-      d="M10 1.75 18.25 10 10 18.25 1.75 10 10 1.75Z"
-      stroke="var(--primary)"
-      stroke-width="1.25"
-      stroke-linejoin="round"></path>
+      d='M19.092 4.243l14.85 14.849-14.85 14.85-14.85-14.85z'
+      stroke='var(--primary)'
+      stroke-width='4'></path>
   </svg>
 
   <span
-    class="font-sans text-[0.9375rem] font-medium tracking-[-0.04em] text-foreground"
+    class='font-sans text-[1.5rem] font-medium leading-none tracking-[-0.04em] text-heading'
   >
-    krebe<span class="text-primary">.</span>dev
+    {site.wordmark}
   </span>
 </div>
