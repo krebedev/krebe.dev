@@ -34,6 +34,9 @@
   --ring: var(--orange);
   --heading: var(--stone-900);
   --hero-name: #524c45;
+  --hero-wash-bottom: color-mix(in srgb, var(--orange) 8%, transparent);
+  --hero-wash-top: color-mix(in srgb, var(--orange-soft) 40%, transparent);
+  --site-cursor-size: 100px;
   --story: #ffffff;
 }
 
@@ -52,6 +55,8 @@
   --ring: var(--orange);
   --heading: #faf8f5;
   --hero-name: #c9c1b8;
+  --hero-wash-bottom: color-mix(in srgb, var(--orange) 14%, transparent);
+  --hero-wash-top: color-mix(in srgb, var(--orange) 5%, transparent);
   --story: #141312;
 }
 
@@ -107,28 +112,23 @@
       position: fixed;
       top: 0;
       left: 0;
-      width: 2rem;
-      height: 2rem;
+      width: var(--site-cursor-size);
+      height: var(--site-cursor-size);
       border-radius: 50%;
       pointer-events: none;
-      transform: translate(-50%, -50%);
+      transform: translate3d(-100px, -100px, 0) translate(-50%, -50%) scale(1);
       background: #fff;
       mix-blend-mode: difference;
       z-index: 9999;
       opacity: 0;
-      transition:
-        width 0.2s ease-in-out,
-        height 0.2s ease-in-out,
-        opacity 0.15s ease;
+      contain: layout style paint;
+      will-change: transform;
+      backface-visibility: hidden;
+      transition: opacity 0.2s ease;
     }
 
     .site-cursor.is-visible {
       opacity: 1;
-    }
-
-    .site-cursor.is-grow {
-      width: 4.5rem;
-      height: 4.5rem;
     }
   }
 
@@ -258,6 +258,30 @@
 }
 
 /* Outside @layer so these override Tailwind utilities (e.g. .absolute) */
+#hero {
+  isolation: isolate;
+  overflow: hidden;
+}
+
+#hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      ellipse 92% 74% at 50% 92%,
+      var(--hero-wash-bottom),
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 78% 50% at 50% -6%,
+      var(--hero-wash-top),
+      transparent 60%
+    );
+}
+
 #hero.hero--stacked {
   justify-content: center;
   align-items: center;

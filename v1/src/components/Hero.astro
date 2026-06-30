@@ -87,7 +87,20 @@ import { site } from '../data/site';
   const isInteractiveHero = () =>
     interactiveHeroMq.matches && !usingKeyboard && !prefersReducedMotion;
 
-  const POINTER_GAP = 12;
+  const getPointerGap = () => {
+    if (!interactiveHeroMq.matches) return 12;
+
+    const cursorSize = parseFloat(
+      getComputedStyle(document.documentElement)
+        .getPropertyValue('--site-cursor-size')
+        .trim(),
+    );
+
+    // Cursor is centered on the pointer; sit copy below the circle + clearance.
+    const clearance = 28;
+    return Number.isFinite(cursorSize) ? cursorSize / 2 + clearance : 78;
+  };
+
   const SMOOTHNESS = 4.5;
 
   const clamp = (value: number, min: number, max: number) =>
@@ -164,7 +177,7 @@ import { site } from '../data/site';
     const y = clamp(clientY, boundsRect.top, boundsRect.bottom);
 
     const relX = x - boundsRect.left;
-    const relY = y - boundsRect.top + POINTER_GAP;
+    const relY = y - boundsRect.top + getPointerGap();
 
     return {
       x: clamp(relX, copyWidth / 2, boundsRect.width - copyWidth / 2),
@@ -193,7 +206,7 @@ import { site } from '../data/site';
     const boundsRect = copyBounds.getBoundingClientRect();
     setCopyTarget(
       boundsRect.left + boundsRect.width / 2,
-      boundsRect.top + boundsRect.height / 2 - POINTER_GAP,
+      boundsRect.top + boundsRect.height / 2 - getPointerGap(),
     );
     copy.currentX = copy.targetX;
     copy.currentY = copy.targetY;
