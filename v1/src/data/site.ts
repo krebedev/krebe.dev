@@ -3,7 +3,6 @@ export const site = {
   wordmark: "krebeDev",
   name: "Solomon Ekrebe",
   jobTitle: "Software Developer",
-  heroEyebrow: "Software Developer",
   heroStatement:
     "Crafting thoughtful apps with clarity and care for the people who use them.",
   url: "https://www.krebe.dev",
@@ -12,7 +11,6 @@ export const site = {
   social: {
     github: "https://github.com/krebedev",
     linkedIn: "https://www.linkedin.com/in/krebedev/",
-    twitter: "https://twitter.com/krebedev",
   },
 } as const;
 

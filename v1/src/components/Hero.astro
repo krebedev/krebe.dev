@@ -1,5 +1,6 @@
 ---
 import { site } from "../data/site";
+import HeroIntro from "./HeroIntro.astro";
 ---
 
 <div
@@ -33,16 +34,7 @@ import { site } from "../data/site";
       id='hero-copy'
       class='hero-copy absolute w-full max-w-md px-6 text-center sm:px-8 lg:px-10'
     >
-      <p
-        class='text-xs font-medium uppercase tracking-[0.2em] text-hero-eyebrow sm:text-sm'
-      >
-        {site.heroEyebrow}
-      </p>
-      <p
-        class='mt-4 text-base leading-relaxed text-hero-name sm:text-lg'
-      >
-        {site.heroStatement}
-      </p>
+      <HeroIntro />
     </div>
   </div>
 </section>
@@ -314,15 +306,11 @@ import { site } from "../data/site";
     heroCopy.style.willChange = "transform";
   };
 
-  const applyCopyMotion = () => {
-    applyCopyPosition(copy.currentX, copy.currentY);
-  };
-
   const syncInteractiveCopyLayout = () => {
     syncCopyBounds();
     prepareInteractiveCopy();
     syncCopyTarget();
-    applyCopyMotion();
+    applyCopyPosition(copy.currentX, copy.currentY);
   };
 
   const stopCopyMotion = () => {

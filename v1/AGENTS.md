@@ -77,7 +77,7 @@ Aim for: restrained typography, generous whitespace, warm neutrals, orange as a 
 
 - Prefer layout/spacing utilities (`flex`, `gap`, `p-`, `max-w-`) over custom CSS
 - Use responsive prefixes (`sm:`, `md:`, `lg:`) — mobile-first
-- Extract repeated class strings into Astro components, not `@apply` piles, unless a single primitive (e.g. `Button`) warrants it
+- Extract repeated class strings into Astro components, not `@apply` piles
 - Run `npm run build` to catch invalid Tailwind classes
 
 ## Pages (in scope)
@@ -97,7 +97,7 @@ v1/
 ├── public/              # Static assets (favicon)
 ├── src/
 │   ├── assets/          # Images optimized at build time (astro:assets)
-│   ├── components/      # SiteHeader, SiteFooter, ThemeToggle, Button, …
+│   ├── components/      # SiteHeader, SiteFooter, ThemeToggle, HeroIntro, …
 │   ├── data/            # site.ts — metadata; story.ts — parsed draft.md stanzas
 │   ├── layouts/         # BaseLayout.astro
 │   ├── pages/           # index.astro
