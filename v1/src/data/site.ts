@@ -8,7 +8,6 @@ export const site = {
     "Crafting thoughtful apps with clarity and care for the people who use them.",
   url: "https://www.krebe.dev",
   email: "solomon@krebe.dev",
-  photo: "/SolomonEkrebe.jpeg",
   closing: "If something here resonated with you, I'd love to hear from you.",
   social: {
     github: "https://github.com/krebedev",

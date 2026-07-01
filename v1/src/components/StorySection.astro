@@ -1,4 +1,6 @@
 ---
+import { Image } from "astro:assets";
+import portrait from "../assets/SolomonEkrebe.jpeg";
 import { storyBlocks } from "../data/story";
 import { site } from "../data/site";
 
@@ -54,11 +56,14 @@ function revealDelay(block: (typeof storyBlocks)[number]): number {
               {
                 isFirst ? (
                   <div class="story-intro">
-                    <img
-                      src={site.photo}
+                    <Image
+                      src={portrait}
                       alt={`Portrait of ${site.name}`}
-                      width={112}
-                      height={112}
+                      width={224}
+                      height={224}
+                      widths={[112, 224]}
+                      sizes="7rem"
+                      format="webp"
                       class="story-intro-photo"
                       loading="lazy"
                       decoding="async"
