@@ -111,6 +111,14 @@ import { site } from "../data/site";
 
   const COPY_SMOOTHNESS = { x: 8, y: 6 };
   const FLIP_HYSTERESIS = 32;
+  const SETTLE_EPSILON = 0.5;
+
+  type CopyLayout = {
+    boundsRect: DOMRect;
+    copyWidth: number;
+    copyHeight: number;
+    gap: number;
+  };
 
   const clamp = (value: number, min: number, max: number) =>
     Math.min(Math.max(value, min), max);
@@ -185,11 +193,15 @@ import { site } from "../data/site";
 
   const NAME_DEAD_ZONE = 20;
 
-  const getTargetPosition = (clientX: number, clientY: number) => {
-    const boundsRect = copyBounds.getBoundingClientRect();
-    const copyWidth = heroCopy.offsetWidth;
-    const copyHeight = heroCopy.offsetHeight;
-    const gap = getPointerGap();
+  const getTargetPosition = (
+    clientX: number,
+    clientY: number,
+    layout?: CopyLayout,
+  ) => {
+    const boundsRect = layout?.boundsRect ?? copyBounds.getBoundingClientRect();
+    const copyWidth = layout?.copyWidth ?? heroCopy.offsetWidth;
+    const copyHeight = layout?.copyHeight ?? heroCopy.offsetHeight;
+    const gap = layout?.gap ?? getPointerGap();
 
     const x = clamp(clientX, boundsRect.left, boundsRect.right);
     const y = clamp(clientY, boundsRect.top, boundsRect.bottom);
@@ -271,6 +283,29 @@ import { site } from "../data/site";
     applyCopyMotion();
   };
 
+  const stopCopyMotion = () => {
+    if (copy.motionRafId) {
+      cancelAnimationFrame(copy.motionRafId);
+      copy.motionRafId = 0;
+    }
+    copy.motionLoopActive = false;
+    copy.lastFrameTime = 0;
+  };
+
+  const wakeCopyMotion = () => {
+    if (!isInteractiveHero() || prefersReducedMotion || copy.motionLoopActive) {
+      return;
+    }
+
+    copy.motionLoopActive = true;
+    copy.lastFrameTime = 0;
+    copy.motionRafId = requestAnimationFrame(runCopyMotion);
+  };
+
+  const isCopySettled = () =>
+    Math.hypot(copy.targetX - copy.currentX, copy.targetY - copy.currentY) <
+    SETTLE_EPSILON;
+
   const syncInteractionMode = () => {
     const interactive = isInteractiveHero();
 
@@ -281,17 +316,7 @@ import { site } from "../data/site";
       window.removeEventListener("pointermove", onPointerMove);
       copy.pointerListenerActive = false;
       copy.hasPointer = false;
-    }
-
-    const shouldAnimate = interactive && !prefersReducedMotion;
-
-    if (shouldAnimate && !copy.motionLoopActive) {
-      resetCopyMotion();
-      copy.motionLoopActive = true;
-      copy.motionRafId = requestAnimationFrame(runCopyMotion);
-    } else if (!shouldAnimate && copy.motionLoopActive) {
-      cancelAnimationFrame(copy.motionRafId);
-      copy.motionLoopActive = false;
+      stopCopyMotion();
     }
   };
 
@@ -334,13 +359,25 @@ import { site } from "../data/site";
     copy.pointerX = event.clientX;
     copy.pointerY = event.clientY;
     copy.hasPointer = true;
+    wakeCopyMotion();
   };
 
   const runCopyMotion = (time: number) => {
     if (!copy.motionLoopActive) return;
 
+    const layout: CopyLayout = {
+      boundsRect: copyBounds.getBoundingClientRect(),
+      copyWidth: heroCopy.offsetWidth,
+      copyHeight: heroCopy.offsetHeight,
+      gap: getPointerGap(),
+    };
+
     if (copy.hasPointer) {
-      const { x, y } = getTargetPosition(copy.pointerX, copy.pointerY);
+      const { x, y } = getTargetPosition(
+        copy.pointerX,
+        copy.pointerY,
+        layout,
+      );
       copy.targetX = x;
       copy.targetY = y;
     }
@@ -355,6 +392,15 @@ import { site } from "../data/site";
     copy.currentX += (copy.targetX - copy.currentX) * easeX;
     copy.currentY += (copy.targetY - copy.currentY) * easeY;
     applyCopyPosition(copy.currentX, copy.currentY);
+
+    if (isCopySettled()) {
+      copy.currentX = copy.targetX;
+      copy.currentY = copy.targetY;
+      applyCopyPosition(copy.currentX, copy.currentY);
+      stopCopyMotion();
+      return;
+    }
+
     copy.motionRafId = requestAnimationFrame(runCopyMotion);
   };
 
@@ -396,7 +442,7 @@ import { site } from "../data/site";
       interactiveHeroMq.removeEventListener("change", scheduleLayoutUpdate);
       document.documentElement.classList.remove("hero-interactive");
       cancelAnimationFrame(copy.layoutRafId);
-      cancelAnimationFrame(copy.motionRafId);
+      stopCopyMotion();
     },
     { once: true },
   );
