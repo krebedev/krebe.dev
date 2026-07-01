@@ -94,8 +94,9 @@ Follow conventional Astro layout as the project grows:
 
 ```
 v1/
-├── public/              # Static assets (favicon, images)
+├── public/              # Static assets (favicon)
 ├── src/
+│   ├── assets/          # Images optimized at build time (astro:assets)
 │   ├── components/      # SiteHeader, SiteFooter, ThemeToggle, Button, …
 │   ├── data/            # site.ts — metadata; story.ts — parsed draft.md stanzas
 │   ├── layouts/         # BaseLayout.astro
