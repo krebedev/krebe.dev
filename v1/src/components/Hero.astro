@@ -1,5 +1,6 @@
 ---
 import { site } from "../data/site";
+import HeroIntro from "./HeroIntro.astro";
 ---
 
 <div
@@ -14,11 +15,9 @@ import { site } from "../data/site";
   class='hero pointer-events-none fixed inset-x-0 z-0 flex flex-col'
   style='top: var(--site-header-height, 5rem); height: calc(100dvh - var(--site-header-height, 5rem));'
 >
-  <div class='hero-desktop-spacer flex-1' aria-hidden='true'></div>
-
   <div
     id='hero-name-container'
-    class='hero-name-scroll w-full px-6 pb-10 sm:px-8 sm:pb-12 lg:px-10 lg:pb-14'
+    class='hero-name-scroll mt-auto w-full px-6 pb-10 sm:pb-12 lg:pb-14'
   >
     <h1
       id='hero-name'
@@ -31,18 +30,9 @@ import { site } from "../data/site";
   <div id='hero-copy-bounds' class='absolute inset-x-0 top-0'>
     <div
       id='hero-copy'
-      class='hero-copy absolute w-full max-w-md px-6 text-center sm:px-8 lg:px-10'
+      class='hero-copy absolute w-full max-w-md px-6 text-center'
     >
-      <p
-        class='text-xs font-medium uppercase tracking-[0.2em] text-primary sm:text-sm'
-      >
-        {site.heroEyebrow}
-      </p>
-      <p
-        class='mt-4 text-base leading-relaxed text-muted-foreground sm:text-lg'
-      >
-        {site.heroStatement}
-      </p>
+      <HeroIntro />
     </div>
   </div>
 </section>
@@ -314,15 +304,11 @@ import { site } from "../data/site";
     heroCopy.style.willChange = "transform";
   };
 
-  const applyCopyMotion = () => {
-    applyCopyPosition(copy.currentX, copy.currentY);
-  };
-
   const syncInteractiveCopyLayout = () => {
     syncCopyBounds();
     prepareInteractiveCopy();
     syncCopyTarget();
-    applyCopyMotion();
+    applyCopyPosition(copy.currentX, copy.currentY);
   };
 
   const stopCopyMotion = () => {

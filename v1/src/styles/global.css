@@ -5,9 +5,7 @@
 :root {
   /* Brand — orange is the dominant color (from v0, refined for premium use) */
   --orange: #f99f20;
-  --orange-deep: #de8e1d;
   --orange-soft: #fff4e5;
-  --orange-muted: #f5d9a8;
 
   /* Neutrals — warm, not blue-tinted */
   --stone-50: #faf8f5;
@@ -16,11 +14,6 @@
   --stone-400: #9c9288;
   --stone-600: #5c554d;
   --stone-900: #1c1917;
-
-  /* Social — only for platform-specific accents */
-  --linkedin: #2867b2;
-  --twitter: #1da1f2;
-  --github: #6cc644;
 
   /* Semantic */
   --background: var(--stone-50);
@@ -34,13 +27,13 @@
   --ring: var(--orange);
   --heading: var(--stone-900);
   --hero-name: #2a2010;
+  --hero-eyebrow: #e8870a;
   --site-cursor-size: 100px;
   --story: #ffffff;
 }
 
 .dark {
   --orange-soft: #2a2010;
-  --orange-muted: #3d2e14;
 
   --background: #0c0a09;
   --foreground: #faf8f5;
@@ -53,14 +46,13 @@
   --ring: var(--orange);
   --heading: #faf8f5;
   --hero-name: #c9c1b8;
+  --hero-eyebrow: var(--orange);
   --story: #141312;
 }
 
 @theme inline {
   --color-orange: var(--orange);
-  --color-orange-deep: var(--orange-deep);
   --color-orange-soft: var(--orange-soft);
-  --color-orange-muted: var(--orange-muted);
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -73,11 +65,8 @@
   --color-ring: var(--ring);
   --color-heading: var(--heading);
   --color-hero-name: var(--hero-name);
+  --color-hero-eyebrow: var(--hero-eyebrow);
   --color-story: var(--story);
-
-  --color-linkedin: var(--linkedin);
-  --color-twitter: var(--twitter);
-  --color-github: var(--github);
 
   --font-sans: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
 }
@@ -261,13 +250,10 @@
   padding-inline: 1.5rem;
 }
 
-#hero.hero--stacked .hero-desktop-spacer {
-  display: none !important;
-}
-
 #hero.hero--stacked #hero-name-container {
   order: 1;
   width: 100%;
+  margin-top: 0 !important;
   padding-bottom: 0 !important;
   text-align: center;
 }

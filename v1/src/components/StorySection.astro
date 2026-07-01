@@ -1,15 +1,11 @@
 ---
 import { Image } from "astro:assets";
 import portrait from "../assets/SolomonEkrebe.jpeg";
+import HeroIntro from "./HeroIntro.astro";
 import { storyBlocks } from "../data/story";
 import { site } from "../data/site";
 
 const isQuestion = (line: string) => line.startsWith('"') && line.endsWith('"');
-
-const closingSocial = [
-  { label: "GitHub", href: site.social.github },
-  { label: "LinkedIn", href: site.social.linkedIn },
-] as const;
 
 let h2Count = 0;
 let indexInSection = 0;
@@ -27,12 +23,7 @@ function revealDelay(block: (typeof storyBlocks)[number]): number {
 
 <section id="story" class="story-section relative z-10 scroll-mt-[var(--site-header-height,5rem)]">
   <div class="story-hero-fallback" aria-label="Introduction">
-    <p class="text-xs font-medium uppercase tracking-[0.2em] text-primary sm:text-sm">
-      {site.heroEyebrow}
-    </p>
-    <p class="mt-4 text-base leading-relaxed text-muted-foreground sm:text-lg">
-      {site.heroStatement}
-    </p>
+    <HeroIntro />
   </div>
 
   <div class="mx-auto max-w-2xl px-6 py-20 sm:py-28 lg:px-10">
@@ -145,21 +136,21 @@ function revealDelay(block: (typeof storyBlocks)[number]): number {
 
       <p class="mt-6 text-base text-muted-foreground sm:text-lg">
         <a
-          href={closingSocial[0].href}
+          href={site.social.github}
           target="_blank"
           rel="noopener noreferrer"
           class="story-link transition hover:text-primary"
         >
-          {closingSocial[0].label}
+          GitHub
         </a>
         <span aria-hidden="true"> · </span>
         <a
-          href={closingSocial[1].href}
+          href={site.social.linkedIn}
           target="_blank"
           rel="noopener noreferrer"
           class="story-link transition hover:text-primary"
         >
-          {closingSocial[1].label}
+          LinkedIn
         </a>
       </p>
     </div>

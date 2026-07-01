@@ -5,7 +5,7 @@ export type StoryBlock =
   | { type: 'h3'; text: string }
   | { type: 'stanza'; lines: string[] };
 
-export function parseDraft(markdown: string): StoryBlock[] {
+function parseDraft(markdown: string): StoryBlock[] {
   return markdown
     .trim()
     .split(/\n\n+/)
