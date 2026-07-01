@@ -24,3 +24,6 @@ pnpm-debug.log*
 .idea/
 
 notes.md
+
+# Local Netlify CLI output
+.netlify

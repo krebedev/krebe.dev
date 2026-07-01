@@ -34,6 +34,7 @@
   --ring: var(--orange);
   --heading: var(--stone-900);
   --hero-name: #2a2010;
+  --hero-eyebrow: #e8870a;
   --site-cursor-size: 100px;
   --story: #ffffff;
 }
@@ -53,6 +54,7 @@
   --ring: var(--orange);
   --heading: #faf8f5;
   --hero-name: #c9c1b8;
+  --hero-eyebrow: var(--orange);
   --story: #141312;
 }
 
@@ -73,6 +75,7 @@
   --color-ring: var(--ring);
   --color-heading: var(--heading);
   --color-hero-name: var(--hero-name);
+  --color-hero-eyebrow: var(--hero-eyebrow);
   --color-story: var(--story);
 
   --color-linkedin: var(--linkedin);
