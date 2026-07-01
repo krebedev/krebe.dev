@@ -250,13 +250,10 @@
   padding-inline: 1.5rem;
 }
 
-#hero.hero--stacked .hero-desktop-spacer {
-  display: none !important;
-}
-
 #hero.hero--stacked #hero-name-container {
   order: 1;
   width: 100%;
+  margin-top: 0 !important;
   padding-bottom: 0 !important;
   text-align: center;
 }
