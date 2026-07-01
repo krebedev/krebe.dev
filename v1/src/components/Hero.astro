@@ -152,14 +152,55 @@ import { site } from "../data/site";
     );
   };
 
+  const nameText = name.textContent ?? "";
+  let nameMeasureCtx: CanvasRenderingContext2D | null = null;
+
+  const measureNameWidth = (
+    fontSize: number,
+    typography: {
+      fontStyle: string;
+      fontWeight: string;
+      fontFamily: string;
+      letterSpacingEm: number;
+    },
+  ) => {
+    if (!nameMeasureCtx) {
+      const canvas = document.createElement("canvas");
+      nameMeasureCtx = canvas.getContext("2d");
+    }
+    if (!nameMeasureCtx) return Number.POSITIVE_INFINITY;
+
+    nameMeasureCtx.font = `${typography.fontStyle} ${typography.fontWeight} ${fontSize}px ${typography.fontFamily}`;
+    const baseWidth = nameMeasureCtx.measureText(nameText).width;
+    const spacing = typography.letterSpacingEm * fontSize;
+    return baseWidth + spacing * Math.max(0, nameText.length - 1);
+  };
+
   const fitName = () => {
-    const styles = getComputedStyle(nameContainer);
+    if (!nameText) return;
+
+    const containerStyles = getComputedStyle(nameContainer);
     const maxWidth =
       nameContainer.clientWidth -
-      parseFloat(styles.paddingLeft) -
-      parseFloat(styles.paddingRight);
+      parseFloat(containerStyles.paddingLeft) -
+      parseFloat(containerStyles.paddingRight);
 
     if (maxWidth <= 0) return;
+
+    const nameStyle = getComputedStyle(name);
+    const currentSize = parseFloat(nameStyle.fontSize);
+    const letterSpacingPx = parseFloat(nameStyle.letterSpacing);
+    const letterSpacingEm =
+      currentSize > 0 && Number.isFinite(letterSpacingPx)
+        ? letterSpacingPx / currentSize
+        : 0;
+
+    const typography = {
+      fontStyle: nameStyle.fontStyle,
+      fontWeight: nameStyle.fontWeight,
+      fontFamily: nameStyle.fontFamily,
+      letterSpacingEm,
+    };
 
     let low = 16;
     let high = 900;
@@ -167,9 +208,8 @@ import { site } from "../data/site";
 
     while (low <= high) {
       const mid = Math.floor((low + high) / 2);
-      name.style.fontSize = `${mid}px`;
 
-      if (name.scrollWidth <= maxWidth) {
+      if (measureNameWidth(mid, typography) <= maxWidth) {
         best = mid;
         low = mid + 1;
       } else {
@@ -177,7 +217,9 @@ import { site } from "../data/site";
       }
     }
 
-    name.style.fontSize = `${best}px`;
+    if (currentSize !== best) {
+      name.style.fontSize = `${best}px`;
+    }
   };
 
   const resetStaticCopyLayout = () => {
