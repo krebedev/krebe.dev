@@ -1,137 +1,79 @@
-## Hi, I'm Solomon.
+## My first job wasn't in software
 
-I build software.
+It was banking.
 
-I have for the better part of a decade.
+It taught me that small mistakes have a habit of becoming expensive ones. Accuracy wasn't something you aimed for, it was expected.
 
-Sometimes for companies. Sometimes for clients. Sometimes for myself because an idea wouldn't leave me alone until I'd built it.
+I didn't know it then, but that mindset followed me into software.
 
-I still enjoy it just as much as when I wrote my first line of code.
+Eight years later, the work has taken me through startups, growing product teams, and founders building the first version of an idea.
 
-When I started, I thought programming was about learning languages.
+Different products.
 
-JavaScript. PHP. Python. React. Node.
+Different industries.
 
-Over time I realised those are only a tiny part of the job.
+Different teams.
 
-The real job is understanding people well enough to build something that feels obvious to them.
+The question underneath has always been the same:
 
-That's much harder.
+Will this still make sense when people start relying on it?
 
-And much more rewarding.
+### What those years taught me
 
-### The first time I got paid to write code
+I've worked on products that shipped every few days, where a rough edge showed up almost immediately for the person using it.
 
-I still remember how surreal it felt.
+I've also worked on products where every release carried a little more weight because thousands of people depended on it.
 
-Someone had a problem they couldn't solve, and somehow the thing I'd spent countless late nights teaching myself had become genuinely useful.
+Both taught me the same lesson.
 
-That feeling hasn't really gone away.
+The hard part is rarely the technology.
 
-Since then I've worked on products ranging from SaaS platforms and internal tools to browser extensions, no-code products and AI-powered applications. At Spark Plugin, I've spent the last few years building tools that help thousands of Squarespace designers customize websites without writing code. Before that I worked on real-time web applications at Threadslist and helped build production applications at Kindle Systems.
+It's understanding what someone actually needs, resisting the urge to overcomplicate it, and building something that's still easy to maintain six months later.
 
-The technology changed.
+I've found that software usually becomes difficult long before the code does. It happens when every edge case becomes another setting, every feature creates three more, and nobody stops to ask whether any of it is necessary.
 
-The motivation didn't.
+That's the kind of complexity I enjoy untangling.
 
-### I like making complicated things feel simple.
+### Today
 
-Not because simplicity is fashionable.
+These days I work at Spark Plugin, building tools that help Squarespace designers customize websites without writing code. The products are used by thousands of designers around the world, but the goal isn't scale for its own sake.
 
-Because complexity has a cost.
+It's making something feel simple.
 
-Every extra click.
-Every confusing setting.
-Every feature that needs explaining.
+The people using those tools shouldn't have to think about how they work. They should be able to focus on designing their website, not fighting the software.
 
-Someone pays for that.
+When someone forgets the tool is even there because it just works, that's usually a good day.
 
-Usually the user.
+### AI in the toolbox
 
-I've spent enough time maintaining software to know that writing more code isn't always progress. Sometimes the biggest improvement comes from deleting code, removing options, or asking whether a feature needs to exist at all.
+AI has changed how I work.
 
-### Somewhere along the way...
+It hasn't changed what makes something worth building.
 
-...I stopped thinking of myself as just a developer.
+I use it every day to explore ideas, prototype faster, work through problems, and occasionally spot the thing I've been staring at for the last hour.
 
-I still enjoy solving technical problems.
+It's made me faster.
 
-But I enjoy product problems even more.
+More curious.
 
-Questions like:
+More willing to try ideas that would've taken days to validate before.
 
-"Why would someone use this?"
+But the work hasn't really changed.
 
-"What's the smallest version of this idea?"
+People still don't care what model you used or what framework you chose.
 
-"Can this interaction disappear completely?"
+They care whether the software solves their problem.
 
-Those questions have shaped almost every project I've worked on.
+### What I'm still chasing
 
-### Side projects keep me honest.
+I'm still interested in the same thing that got me into programming in the first place.
 
-Most of what I've learned didn't come from my day job.
+Making useful things.
 
-It came from building things that nobody asked me to build.
+Things that feel dependable.
 
-A browser extension because I wanted a better workflow.
+Things that don't demand attention once they're in someone's workflow.
 
-An AI tool because I was curious.
+Software has a tendency to become more complicated over time.
 
-A small experiment that failed after two weekends.
-
-Another that quietly turned into something people actually used.
-
-Side projects have a way of exposing assumptions.
-
-They don't care how experienced you are.
-
-They simply tell you whether your idea was any good.
-
-## AI changed my workflow.
-
-Not my standards.
-
-I use AI every day.
-
-It helps me prototype faster, explore ideas, explain code, write tests, and occasionally point out something I've been staring at for an hour.
-
-It's become another tool in the toolbox.
-
-Useful.
-
-Powerful.
-
-But still just a tool.
-
-The best products I've worked on weren't successful because they used AI.
-
-They were successful because they solved a real problem.
-
-### Things I've learned
-
-Good software isn't finished when every feature has been added.
-
-It's finished when removing another feature would make it worse.
-
-People rarely notice performance.
-
-Until it's slow.
-
-Code is easier to rewrite than assumptions.
-
-Question those first.
-
-The best engineers I've worked with were also the best listeners.
-
-Shipping teaches faster than planning.
-
-### Outside the editor
-
-I enjoy mentoring developers, exploring new product ideas, and occasionally disappearing down rabbit holes that start with "there has to be a better way to do this."
-
-Those rabbit holes are responsible for some of my favourite projects.
-
-Thanks for stopping by.
-
-There's a good chance I'm building something new right now.
+I enjoy pushing in the other direction.
