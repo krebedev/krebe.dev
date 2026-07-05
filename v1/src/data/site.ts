@@ -5,8 +5,9 @@ export const site = {
   jobTitle: "Software Developer",
   heroStatement: "Making complex things feel simple.",
   url: "https://www.krebe.dev",
-  email: "solomon@krebe.dev",
-  closing: "If something here resonated with you, I'd love to hear from you.",
+  email: "hello@krebe.dev",
+  closing:
+    "If you're building something people will rely on, I'd like to hear about it.",
   social: {
     github: "https://github.com/krebedev",
     linkedIn: "https://www.linkedin.com/in/krebedev/",
