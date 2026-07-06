@@ -8,6 +8,7 @@ Personal website for **Solomon Ekrebe** ([krebeDev](https://github.com/krebedev)
 |------|--------|---------|
 | `v1/` | **Active** | New site — Astro, single-page homepage |
 | `v0/` | Legacy | Previous Gatsby site (portfolio, blog, about, contact). Reference only. |
+| `README.md` | Active | Minimal repo overview and dev commands |
 | `.cursor/rules/` | Active | Workflow rules for AI-assisted development |
 
 All new implementation belongs in `v1/`. Read `v1/AGENTS.md` before editing anything under `v1/`.
@@ -31,26 +32,27 @@ Treat `AGENTS.md` files as **living docs**, not one-time setup notes. Update the
 
 If you notice stale guidance while working, fix it — don't leave the next agent to rediscover the same gap.
 
-## Current migration
+## Site status
 
-The site is being rebuilt from scratch in `v1/` with a narrower scope:
+**`v1/` is the active site** — live at [krebe.dev](https://www.krebe.dev). Scope: single homepage (fixed hero, scroll-reveal story, contact block).
 
-- **Homepage** — fixed hero, scroll-reveal story, closing email + social links
+**`v0/` is legacy** — previous Gatsby site (portfolio, blog, about, contact). Reference only; do not edit unless explicitly asked. Do not port v0 pages into v1 without approval.
 
-Pages from `v0/` (portfolio, blog, about, contact) are out of scope for this round. Do not port or reintroduce them unless explicitly requested.
-
-Use `v0/` as a **content and design reference** — copy, metadata, images, and UX patterns live there. Do not modify `v0/` unless the task explicitly says so.
+Use `v0/` for historical copy tone, old images, and UX patterns — not as the source of truth for current metadata or story content.
 
 ## Author & site metadata
 
-Source of truth for personal details: `v0/gatsby-config.js` → `siteMetadata`.
+**Source of truth:** `v1/src/data/site.ts`
+
+Current values (update `site.ts`, not this list, when they change):
 
 - Name: Solomon Ekrebe
-- Role: Full-Stack Developer
+- Role: Software Developer
 - Site URL: https://www.krebe.dev
-- Social: GitHub, LinkedIn, Twitter (see `siteMetadata.author.socialProfiles`)
+- Email: hello@krebe.dev
+- Social: GitHub, LinkedIn (see `site.social`)
 
-When wiring SEO or contact content in `v1/`, pull from these values rather than inventing new copy.
+Story copy lives in `v1/src/data/draft.md`. SEO, hero, contact, and employer fields live in `site.ts`. See `v1/AGENTS.md` for the full content-update checklist.
 
 ## Agent workflow
 
@@ -66,8 +68,10 @@ When wiring SEO or contact content in `v1/`, pull from these values rather than 
 - Do not add dependencies without a clear reason; prefer Astro built-ins and minimal additions.
 - Do not delete or refactor `v0/` as part of `v1/` work.
 - Do not expand scope (blog, portfolio, CMS, etc.) without explicit approval.
-- Ask before changing deployment or DNS configuration.
 
 ## Deployment
 
-The legacy site deploys via Netlify (`v0/README.md`). `v1/` deployment setup will be defined as the Astro project is scaffolded — do not assume `v0/` Netlify config applies to `v1/` without checking.
+- **Live site:** `v1/` → Netlify (publish directory: `v1/dist`)
+- **Legacy site:** `v0/` deployed via Netlify (`v0/README.md`)
+
+Do not assume `v0/` Netlify settings apply to `v1/` without checking. Ask before changing deployment or DNS configuration.

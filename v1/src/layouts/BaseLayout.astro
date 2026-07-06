@@ -12,8 +12,23 @@ interface Props {
   hideFooter?: boolean;
 }
 
-const { title, description = site.heroStatement, hideFooter = false } = Astro.props;
+const { title, description = site.description, hideFooter = false } = Astro.props;
 const pageTitle = title === site.name ? `${site.jobTitle} | ${site.name}` : `${title} | ${site.title}`;
+const socialImageUrl = new URL(site.socialImage.path, site.url).href;
+const personSchema = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: site.name,
+  url: site.url,
+  jobTitle: site.jobTitle,
+  email: site.email,
+  worksFor: {
+    "@type": "Organization",
+    name: site.employer.name,
+    url: site.employer.url,
+  },
+  sameAs: [site.social.github, site.social.linkedIn],
+};
 ---
 
 <!doctype html>
@@ -22,17 +37,27 @@ const pageTitle = title === site.name ? `${site.jobTitle} | ${site.name}` : `${t
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
+    <meta name="author" content={site.name} />
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={site.url} />
     <meta property="og:type" content="website" />
-    <meta name="twitter:card" content="summary" />
+    <meta property="og:site_name" content={site.title} />
+    <meta property="og:image" content={socialImageUrl} />
+    <meta property="og:image:width" content={String(site.socialImage.width)} />
+    <meta property="og:image:height" content={String(site.socialImage.height)} />
+    <meta property="og:image:alt" content={site.socialImage.alt} />
+    <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={socialImageUrl} />
+    <meta name="twitter:image:alt" content={site.socialImage.alt} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="canonical" href={site.url} />
+    <link rel="alternate" type="text/plain" href="/llms.txt" title="LLM site summary" />
     <title>{pageTitle}</title>
+    <script type="application/ld+json" set:html={JSON.stringify(personSchema)} />
     <script is:inline>
       (function () {
         const stored = localStorage.getItem('theme');

@@ -1,10 +1,10 @@
-## My first job wasn't in software
+## My first job wasn't in tech
 
 It was banking.
 
 It taught me that small mistakes have a habit of becoming expensive ones. Accuracy wasn't something you aimed for, it was expected.
 
-I didn't know it then, but that mindset followed me into software.
+That mindset followed me into engineering.
 
 Eight years later, the work has taken me through startups, growing product teams, and founders building the first version of an idea.
 
@@ -16,7 +16,7 @@ Different teams.
 
 The question underneath has always been the same:
 
-Will this still make sense when people start relying on it?
+Will this hold up when people start relying on it?
 
 ### What those years taught me
 
@@ -36,7 +36,7 @@ That's the kind of complexity I enjoy untangling.
 
 ### Today
 
-These days I work at Spark Plugin, building tools that help Squarespace designers customize websites without writing code. The products are used by thousands of designers around the world, but the goal isn't scale for its own sake.
+These days I work at [Spark Plugin](https://www.sparkplugin.com/), building tools that help Squarespace designers customize websites without writing code. The products are used by thousands of designers around the world, but the goal isn't scale for its own sake.
 
 It's making something feel simple.
 

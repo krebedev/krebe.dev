@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://www.krebe.dev/sitemap.xml
+
+# LLM-readable site summary: https://www.krebe.dev/llms.txt

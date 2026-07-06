@@ -2,10 +2,8 @@
 import { Image } from "astro:assets";
 import portrait from "../assets/SolomonEkrebe.jpeg";
 import HeroIntro from "./HeroIntro.astro";
-import { storyBlocks } from "../data/story";
+import { storyBlocks, isStoryQuote, parseStoryLine } from "../data/story";
 import { site } from "../data/site";
-
-const isQuestion = (line: string) => line.startsWith('"') && line.endsWith('"');
 
 let h2Count = 0;
 let indexInSection = 0;
@@ -102,10 +100,23 @@ function revealDelay(block: (typeof storyBlocks)[number]): number {
               <p
                 class:list={[
                   "story-line text-lg leading-[1.75] text-foreground sm:text-xl sm:leading-[1.7]",
-                  isQuestion(line) && "story-quote",
+                  isStoryQuote(line) && "story-quote",
                 ]}
               >
-                {line}
+                {parseStoryLine(line).map((segment) =>
+                  segment.type === "link" ? (
+                    <a
+                      href={segment.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="story-link transition hover:text-primary"
+                    >
+                      {segment.label}
+                    </a>
+                  ) : (
+                    segment.value
+                  ),
+                )}
               </p>
             ))}
           </div>
