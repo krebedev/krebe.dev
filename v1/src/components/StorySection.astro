@@ -7,6 +7,33 @@ import { site } from "../data/site";
 
 const isQuestion = (line: string) => line.startsWith('"') && line.endsWith('"');
 
+type StorySegment =
+  | { type: "text"; value: string }
+  | { type: "link"; label: string; href: string };
+
+function parseStoryLine(line: string): StorySegment[] {
+  const segments: StorySegment[] = [];
+  const linkPattern = /\[([^\]]+)\]\(([^)]+)\)/g;
+  let lastIndex = 0;
+
+  for (const match of line.matchAll(linkPattern)) {
+    if (match.index === undefined) continue;
+
+    if (match.index > lastIndex) {
+      segments.push({ type: "text", value: line.slice(lastIndex, match.index) });
+    }
+
+    segments.push({ type: "link", label: match[1], href: match[2] });
+    lastIndex = match.index + match[0].length;
+  }
+
+  if (lastIndex < line.length) {
+    segments.push({ type: "text", value: line.slice(lastIndex) });
+  }
+
+  return segments.length ? segments : [{ type: "text", value: line }];
+}
+
 let h2Count = 0;
 let indexInSection = 0;
 
@@ -105,7 +132,20 @@ function revealDelay(block: (typeof storyBlocks)[number]): number {
                   isQuestion(line) && "story-quote",
                 ]}
               >
-                {line}
+                {parseStoryLine(line).map((segment) =>
+                  segment.type === "link" ? (
+                    <a
+                      href={segment.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="story-link transition hover:text-primary"
+                    >
+                      {segment.label}
+                    </a>
+                  ) : (
+                    segment.value
+                  ),
+                )}
               </p>
             ))}
           </div>
