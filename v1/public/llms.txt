@@ -1,0 +1,17 @@
+# krebe.dev
+
+> Personal site of Solomon Ekrebe, a software developer making complex things feel simple.
+
+Solomon Ekrebe is a software developer at Spark Plugin. This single-page site introduces his work, professional story, and contact details. The story covers a banking background, product engineering experience, and building tools used by thousands of Squarespace designers.
+
+## Pages
+
+- [Homepage](https://www.krebe.dev/): Hero, professional story, and contact block.
+- [Full site content](https://www.krebe.dev/llms-full.txt): Complete homepage copy in Markdown for AI agents.
+
+## Optional
+
+- [GitHub](https://github.com/krebedev): Open-source work and projects.
+- [LinkedIn](https://www.linkedin.com/in/krebedev/): Professional profile.
+- [Spark Plugin](https://www.sparkplugin.com/): Current employer product site.
+- [Email](mailto:hello@krebe.dev): Contact email.

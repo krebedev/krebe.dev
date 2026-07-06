@@ -94,19 +94,36 @@ Follow conventional Astro layout as the project grows:
 
 ```
 v1/
-├── public/              # Static assets (favicon)
+├── public/              # favicon, robots.txt, sitemap.xml, llms.txt, thumbnail.png
 ├── src/
 │   ├── assets/          # Images optimized at build time (astro:assets)
 │   ├── components/      # SiteHeader, SiteFooter, ThemeToggle, HeroIntro, …
 │   ├── data/            # site.ts — metadata; story.ts — parsed draft.md stanzas
 │   ├── layouts/         # BaseLayout.astro
-│   ├── pages/           # index.astro
+│   ├── pages/           # index.astro, llms-full.txt.ts
 │   └── styles/          # global.css — Tailwind import + theme tokens
 ├── astro.config.mjs
 └── package.json
 ```
 
 `src/styles/global.css` imports Tailwind and defines semantic color tokens as CSS variables for light/dark themes.
+
+## SEO & LLM discovery
+
+Static files in `public/`:
+
+| File | Purpose |
+|------|---------|
+| `robots.txt` | Crawler rules; references sitemap and `llms.txt` |
+| `sitemap.xml` | Single-page sitemap for `https://www.krebe.dev/` |
+| `llms.txt` | Curated [llms.txt](https://llmstxt.org/) index for AI agents |
+| `thumbnail.png` | Social preview image (`og:image` / `twitter:image`) |
+
+`src/pages/llms-full.txt.ts` prerenders `/llms-full.txt` at build time from `site.ts` + `draft.md` — full homepage copy in Markdown for agents that want the complete text.
+
+`site.ts` holds `description` (meta/OG), `heroStatement` (hero only), and employer metadata. `BaseLayout.astro` sets canonical URL, Open Graph/Twitter tags, JSON-LD `Person` schema, and a `<link rel="alternate">` to `/llms.txt`.
+
+Update `public/llms.txt` and `site.description` when story or site scope changes materially.
 
 ## Content reference
 

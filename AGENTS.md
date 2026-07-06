@@ -8,6 +8,7 @@ Personal website for **Solomon Ekrebe** ([krebeDev](https://github.com/krebedev)
 |------|--------|---------|
 | `v1/` | **Active** | New site — Astro, single-page homepage |
 | `v0/` | Legacy | Previous Gatsby site (portfolio, blog, about, contact). Reference only. |
+| `README.md` | Active | Minimal repo overview and dev commands |
 | `.cursor/rules/` | Active | Workflow rules for AI-assisted development |
 
 All new implementation belongs in `v1/`. Read `v1/AGENTS.md` before editing anything under `v1/`.
