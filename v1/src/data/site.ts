@@ -5,7 +5,7 @@ export const site = {
   jobTitle: "Software Developer",
   heroStatement: "Making complex things feel simple.",
   description:
-    "Personal site of Solomon Ekrebe, a software developer at Spark Plugin. A scroll-reveal story about building dependable software, plus contact details.",
+    "Software engineer building AI products, developer tools, and scalable web applications.",
   url: "https://www.krebe.dev",
   socialImage: {
     path: "/thumbnail.png",
@@ -15,7 +15,7 @@ export const site = {
   },
   email: "hello@krebe.dev",
   closing:
-    "If you're building something people will rely on, I'd like to hear about it.",
+    "If you're building something to solve a niche problem, I'd like to hear about it.",
   employer: {
     name: "Spark Plugin",
     url: "https://www.sparkplugin.com/",
