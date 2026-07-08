@@ -1,8 +1,8 @@
-## My first job wasn't in tech
+## My first job wasn't in tech.
 
 It was banking.
 
-It taught me that small mistakes have a habit of becoming expensive ones. Accuracy wasn't something you aimed for, it was expected.
+It taught me that small mistakes have a way of becoming expensive ones. Getting the details right was simply part of the job.
 
 That mindset followed me into engineering.
 
@@ -16,7 +16,7 @@ Different teams.
 
 The question underneath has always been the same:
 
-Will this hold up when people start relying on it?
+Will this hold up long enough?
 
 ### What those years taught me
 
